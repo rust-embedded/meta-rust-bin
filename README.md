@@ -1,0 +1,123 @@
+meta-rust-bin
+=============
+
+An OpenEmebdded/Yocto layer providing pre-built toolchains for the
+[Rust programming language](https://www.rust-lang.org).
+
+<!-- toc -->
+
+- [Basic Example](#basic-example)
+- [Features](#features)
+- [Advanced Features](#advanced-features)
+  * [Specifying Cargo Features](#specifying-cargo-features)
+  * [Using Components Individually](#using-components-individually)
+- [Pre-built vs. Compiled](#pre-built-vs-compiled)
+- [Copyright](#copyright)
+
+<!-- tocstop -->
+
+
+## Basic Example
+
+A basic class for cargo-based executables is provided. The following is a
+simple recipe that builds the [gpio-utils](https://github.com/rust-embedded/gpio-utils)
+crate from a branch tagged with the version `${PV}`:
+
+```bitbake
+inherit cargo
+
+SUMMARY = "GPIO Utilities"
+HOMEPAGE = "git://github.com/rust-embedded/gpio-utils"
+LICENSE = "MIT"
+
+SRC_URI = "https://github.com/rust-embedded/gpio-utils.git;tag=${PV}"
+S = "${WORKDIR}/git"
+
+LIC_FILES_CHKSUM = "file://LICENSE-MIT;md5=935a9b2a57ae70704d8125b9c0e39059"
+```
+
+As you can see, there is almost no overhead introduced from the `cargo` class
+beyond simply inheriting it. The `cargo` class adds the appropriate Rust
+dependencies as well as default compile and install steps.
+
+
+## Features
+
+Currently supported:
+
+  * Rust 1.11
+  * x86 (32 and 64-bit), ARM (32 and 64-bit) build systems.
+  * All Linux architectures that Rust itself supports (Multiple flavors of:
+    x86, ARM, PPC, and MIPS)
+
+Future:
+
+  * [ ] Building and installing `dev` and `staticdev` packages (i.e. allow build
+    and install of static and dynamic library builds).
+  * [ ] Debug builds with separated debug info to allow gdbserver usage.
+  * [ ] Running Rust/Cargo on target.
+  * [ ] Vendoring of Cargo dependencies (to better play with the Yocto offline
+    build model).
+
+
+## Advanced Features
+
+### Specifying Cargo Features
+
+Because Yocto is primarily used for embedded development, it is likely that
+projects will have differing features based on whether the crate is run on the
+hardware or in development on a PC. Cargo features can be easily specified by
+adding a space-separated list of `CARGO_FEATURES` to the recipe:
+
+```bitbake
+CARGO_FEATURES = "feature1 feature2"
+```
+
+### Using Components Individually
+
+Although the `cargo` class is the easiest way to use this layer, the components
+it provides may also be used directly. To add the Rust compiler plus target and
+host standard libraries to the environment, depend on or install `rust-bin`. To
+manually install `cargo` depend on or install `cargo-bin`.
+
+Note that while there is nothing explicitly preventing the installation of Rust
+on the target, it hasn't been tested and is likely not to work. Pull requests
+are welcome!
+
+
+## Pre-built vs. Compiled
+
+This layer exists as a tradeoff against other options, e.g. the
+[meta-rust](https://github.com/meta-rust) project. Both exist to satisfy
+different requirements.
+
+Because this layer uses the upstream compiled versions of Rust and Cargo, it
+will never be able to support architectures or options not supported by the
+Rust team itself.
+
+Also, because this layer uses pre-built Rust standard libraries, it is possible
+that the standard libraries provided with this layer will be less efficient
+than code produced by a custom-compiled standard library.
+
+However, using pre-built tools has advantages:
+
+  * Updating the layer to a new version of Rust is as easy as updating
+    checksums and file names, so new versions of Rust are available quickly.
+  * In almost all modern systems, it is faster to download the binaries than it
+    is to download source and build the Rust toolchain from scratch.
+  * Compatability across multiple versions of Yocto is maximized since only
+    basic, stable recipe features are used.
+  * Trivial support for all architectures supported by upstream Rust.
+
+
+## Copyright
+
+```
+Copyright (c) 2016, the meta-rust-bin authors.
+
+Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+http://www.apache.org/license/LICENSE-2.0> or the MIT license
+<LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+option.  This file may not be copied, modified, or distributed
+except according to those terms.
+```
