@@ -49,6 +49,8 @@ Currently supported:
   * x86 (32 and 64-bit), ARM (32 and 64-bit) build systems.
   * All Linux architectures that Rust itself supports (Multiple flavors of:
     x86, ARM, PPC, and MIPS)
+  * Statically-linked libstd, dynamically-linked system libraries (libc, libm,
+    etc)
 
 Future:
 
@@ -58,6 +60,10 @@ Future:
   * [ ] Running Rust/Cargo on target.
   * [ ] Vendoring of Cargo dependencies (to better play with the Yocto offline
     build model).
+  * [ ] Use of a shared libstd across all Rust packages on a target system
+    (provides space savings).
+  * [ ] Total static linking using MUSL.
+
 
 
 ## Advanced Features
