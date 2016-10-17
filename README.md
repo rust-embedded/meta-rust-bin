@@ -115,12 +115,20 @@ However, using pre-built tools has advantages:
     basic, stable recipe features are used.
   * Trivial support for all architectures supported by upstream Rust.
 
-## Adding Support for new Versions
+## Adding Support for New Versions
 
 When a new version of rust is released, adding support for this new version can
 be done by running `build-new-version.sh` as follows:
 
-    ./build-new-version.sh <version> recipes-devtools/rust/rust-bin_<version>.bb
+    ./build-new-version.sh <version>
+
+This will create two new recipes:
+ - recipes-devtools/rust/rust-bin-<version>.bb
+ - recipes-devtools/rust/cargo-bin-<date>.bb
+
+ Where the cargo version generated is the one packaged with the associated
+ release of rust itself (using the published channel data consumed by other
+ tools like rustup).
 
 ## Copyright
 
