@@ -74,6 +74,7 @@ def build_type(d):
 
 cargo_do_compile() {
     export CC="${WRAPPER_DIR}/cc-wrapper.sh"
+    export PKG_CONFIG_ALLOW_CROSS="1"
     bbnote "which rustc:" `which rustc`
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
