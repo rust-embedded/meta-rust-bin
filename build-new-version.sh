@@ -26,7 +26,6 @@ i686-unknown-linux-gnu
 mips-unknown-linux-gnu
 mipsel-unknown-linux-gnu
 powerpc-unknown-linux-gnu
-powerpc64-unknown-linux-gnu
 x86_64-unknown-linux-gnu"
 
 RUSTC_TRIPLES="\

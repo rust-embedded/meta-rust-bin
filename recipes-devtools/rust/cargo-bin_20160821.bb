@@ -27,7 +27,7 @@ def cargo_sha256(triple):
     }
     return get_hash(HASHES, triple)
 
-DEPENDS += "rust-bin (= 1.12.0)"
+DEPENDS += "rust-bin (= 1.12.1)"
 LIC_FILES_CHKSUM = "\
     file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \
     file://LICENSE-MIT;md5=362255802eb5aa87810d12ddf3cfedb4 \
