@@ -1,4 +1,7 @@
 
+# Recipe for cargo 20160821
+# This corresponds to rust release 1.12.1
+
 def get_hash(hashes, triple):
     try:
         return hashes[triple]

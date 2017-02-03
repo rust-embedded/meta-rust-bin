@@ -1,4 +1,7 @@
 
+# Recipe for cargo 298a0127f703d4c2500bb06d309488b92ef84ae1
+# This corresponds to rust release 1.14.0
+
 def get_hash(hashes, triple):
     try:
         return hashes[triple]

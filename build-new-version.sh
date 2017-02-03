@@ -185,6 +185,9 @@ EOF
 
 write_cargo_recipe() {
     cat <<EOF >>${CARGO_BIN_RECIPE}
+# Recipe for cargo $(cargo_version)
+# This corresponds to rust release ${TARGET_VERSION}
+
 def get_hash(hashes, triple):
     try:
         return hashes[triple]
@@ -225,7 +228,7 @@ EOF
 download_files
 
 RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin_${TARGET_VERSION}.bb"
-CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin_$(cargo_version).bb"
+CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin_${TARGET_VERSION}.bb"
 
 # create/clear files
 echo "" >${RUST_BIN_RECIPE}
