@@ -14,6 +14,8 @@ if [ -z "$TARGET_VERSION" ]; then
     exit 1
 fi
 
+CHANNEL_FILE="channel-rust-${TARGET_VERSION}.toml"
+
 TMPDIR=`mktemp -p $PWD -d`
 cd "$TMPDIR"
 
@@ -63,18 +65,29 @@ get_rust_sha256sum() {
     get_sha256sum ${component}-${TARGET_VERSION}-${triple}.tar.gz
 }
 
+cargo_url() {
+    local triple="$1"
+    grep -A 3 "pkg.cargo.target.${triple}" ${CHANNEL_FILE} | \
+        grep '^url =' | \
+        cut -d '=' -f2 | \
+        tr -d '"'
+}
+
+cargo_version() {
+    cargo_url x86_64-unknown-linux-gnu | rev | cut -d'/' -f2 | rev | tr -d '-'
+}
+
+cargo_filename() {
+    local triple="$1"
+    cargo_url $triple | rev | cut -d'/' -f1 | rev
+}
+
 download_files() {
-    # channel file
-    local channel_file="channel-rust-${TARGET_VERSION}.toml"
-    wget https://static.rust-lang.org/dist/${channel_file}
+    wget https://static.rust-lang.org/dist/${CHANNEL_FILE}
 
     # cargo for each supported host triple
     for triple in $RUSTC_TRIPLES; do
-        url=$(grep -A 3 "pkg.cargo.target.${triple}" ${channel_file} | \
-                     grep '^url =' | \
-                     cut -d '=' -f2 | \
-                     tr -d '"')
-        wget ${url}
+        wget $(cargo_url $triple)
     done
 
     # rustc
@@ -86,22 +99,6 @@ download_files() {
     for triple in $TARGET_TRIPLES; do
         dlfile rust-std ${triple}
     done
-}
-
-cargo_version() {
-    grep -A 3 "pkg.cargo.target.x86_64-unknown-linux-gnu" "channel-rust-${TARGET_VERSION}.toml" | \
-        grep '^url =' | \
-        cut -d'=' -f2 | \
-        tr -d '"' | \
-        rev | \
-        cut -d'/' -f2 | \
-        rev | \
-        tr -d '-'
-}
-
-cargo_filename() {
-    triple="$1"
-    echo "cargo-nightly-${triple}.tar.gz"
 }
 
 write_get_hash() {
@@ -188,6 +185,9 @@ EOF
 
 write_cargo_recipe() {
     cat <<EOF >>${CARGO_BIN_RECIPE}
+# Recipe for cargo $(cargo_version)
+# This corresponds to rust release ${TARGET_VERSION}
+
 def get_hash(hashes, triple):
     try:
         return hashes[triple]
@@ -228,7 +228,7 @@ EOF
 download_files
 
 RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin_${TARGET_VERSION}.bb"
-CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin_$(cargo_version).bb"
+CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin_${TARGET_VERSION}.bb"
 
 # create/clear files
 echo "" >${RUST_BIN_RECIPE}

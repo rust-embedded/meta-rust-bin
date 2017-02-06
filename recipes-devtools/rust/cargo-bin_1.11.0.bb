@@ -1,3 +1,7 @@
+
+# Recipe for cargo 20160705
+# This corresponds to rust release 1.11.0
+
 def get_hash(hashes, triple):
     try:
         return hashes[triple]
@@ -25,7 +29,6 @@ def cargo_sha256(triple):
         "x86_64-unknown-linux-gnu": "cf47787fd50bf6c7f68db290eab054e493e4619d42a8faf66565431449055f1c",
     }
     return get_hash(HASHES, triple)
-
 
 DEPENDS += "rust-bin (= 1.11.0)"
 LIC_FILES_CHKSUM = "\
