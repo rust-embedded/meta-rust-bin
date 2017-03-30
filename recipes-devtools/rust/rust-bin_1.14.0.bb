@@ -1,5 +1,5 @@
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -18,7 +18,7 @@ def rust_std_md5(triple):
         "powerpc-unknown-linux-gnu": "ebb4c13b5010457f91e591ae5dfbf7c4",
         "x86_64-unknown-linux-gnu": "518e492fc3d50d8c678056eb788bd0e7",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rust_std_sha256(triple):
     HASHES = {
@@ -32,7 +32,7 @@ def rust_std_sha256(triple):
         "powerpc-unknown-linux-gnu": "c8985bfb8bae69e72c5a6f0538b2990ebf224011d4a2e31cd4513dd16e5263ed",
         "x86_64-unknown-linux-gnu": "3a609bfe9572c742d71199faad578ee76abe9067cd8df698bda6e3ef5caf6ec4",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_md5(triple):
     HASHES = {
@@ -43,7 +43,7 @@ def rustc_md5(triple):
         "i686-unknown-linux-gnu": "aa62d4b70cfaf785ff7b1c72cb94b9a2",
         "x86_64-unknown-linux-gnu": "f178d9d6aad0f87c451f4b2f93170633",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_sha256(triple):
     HASHES = {
@@ -54,7 +54,7 @@ def rustc_sha256(triple):
         "i686-unknown-linux-gnu": "52b7df5025c302d82f0572fbdc74309334bad36e796c4a2fdf934abe2e5e23ac",
         "x86_64-unknown-linux-gnu": "0eeec4211aa872f24c220200a0c2b095bbfc9c0f737c1c5df2555967c8f36787",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=43e1f1fb9c0ee3af66693d8c4fecafa8"
 

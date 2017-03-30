@@ -67,10 +67,10 @@ get_rust_sha256sum() {
 
 cargo_url() {
     local triple="$1"
-    grep -A 3 "pkg.cargo.target.${triple}" ${CHANNEL_FILE} | \
+    grep -A 3 "^\[pkg.cargo.target.${triple}\]" ${CHANNEL_FILE} | \
         grep '^url =' | \
         cut -d '=' -f2 | \
-        tr -d '"'
+        tr -d '[" ]'
 }
 
 cargo_version() {
@@ -101,9 +101,9 @@ download_files() {
     done
 }
 
-write_get_hash() {
+write_get_by_triple() {
     cat <<EOF >>${RUST_BIN_RECIPE}
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -123,7 +123,7 @@ EOF
     done
     cat <<EOF >>${RUST_BIN_RECIPE}
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 EOF
 }
@@ -140,7 +140,7 @@ EOF
 
     cat <<EOF >>${RUST_BIN_RECIPE}
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 EOF
 }
@@ -155,7 +155,7 @@ EOF
     done
     cat <<EOF >>${RUST_BIN_RECIPE}
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 EOF
 }
@@ -170,7 +170,7 @@ EOF
     done
     cat >>${RUST_BIN_RECIPE} <<EOF
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 EOF
 }
@@ -188,7 +188,7 @@ write_cargo_recipe() {
 # Recipe for cargo $(cargo_version)
 # This corresponds to rust release ${TARGET_VERSION}
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -202,7 +202,7 @@ EOF
     done
     cat <<EOF >>${CARGO_BIN_RECIPE}
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def cargo_sha256(triple):
     HASHES = {
@@ -213,7 +213,18 @@ EOF
 
     cat <<EOF >>${CARGO_BIN_RECIPE}
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
+
+def cargo_url(triple):
+    URLS = {
+EOF
+    for triple in $RUSTC_TRIPLES; do
+        echo >>${CARGO_BIN_RECIPE} "        \"$triple\": \"$(cargo_url $triple)\","
+    done
+
+    cat <<EOF >>${CARGO_BIN_RECIPE}
+    }
+    return get_by_triple(URLS, triple)
 
 DEPENDS += "rust-bin (= ${TARGET_VERSION})"
 LIC_FILES_CHKSUM = "\\
@@ -235,7 +246,7 @@ echo "" >${RUST_BIN_RECIPE}
 echo "" >${CARGO_BIN_RECIPE}
 
 # write the rust-bin recipe
-write_get_hash
+write_get_by_triple
 write_std_md5
 write_std_sha256
 write_rustc_md5

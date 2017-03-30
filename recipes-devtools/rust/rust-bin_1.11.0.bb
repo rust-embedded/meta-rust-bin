@@ -1,8 +1,10 @@
-def get_hash(hashes, triple):
+
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
         bb.fatal("Unsupported triple: %s" % triple)
+
 
 def rust_std_md5(triple):
     HASHES = {
@@ -14,11 +16,9 @@ def rust_std_md5(triple):
         "mips-unknown-linux-gnu": "b90ae32b2681b07301d011ce17067376",
         "mipsel-unknown-linux-gnu": "d68a0b100c1d7e84397b92fcdd5a0c08",
         "powerpc-unknown-linux-gnu": "fabcfe72cba56da32696f08fea3cde4b",
-        "powerpc64-unknown-linux-gnu": "14ce3a15f88250896c452058aa483dae",
-        "powerpc64le-unknown-linux-gnu": "ef8ef16204bd8229f93ddb2dd6e2c1b4",
         "x86_64-unknown-linux-gnu": "04497872d0ed1eb7efa8fefcfce71ab4",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rust_std_sha256(triple):
     HASHES = {
@@ -30,11 +30,9 @@ def rust_std_sha256(triple):
         "mips-unknown-linux-gnu": "830667f2dfbbc6c5ed1c7ca9adfb6687e00e49ae085b22d63a9d1a55329cae8d",
         "mipsel-unknown-linux-gnu": "57be30f7bb793ec82de5f1b6a823d04e61dcdf18a4e7bd045c1333196448f987",
         "powerpc-unknown-linux-gnu": "c044c8b1483e774f2fc13c98e961143ec3bc0a7ade0ae0fd25827b3eeba97979",
-        "powerpc64-unknown-linux-gnu": "cdc592d78eac54fd3e9868627a6f506d114147124d7ee54c4a1fa6d021d336b0",
-        "powerpc64le-unknown-linux-gnu": "1edc3225047e09c7a720d4629c919dd29a08461305418314288c4cd693902456",
         "x86_64-unknown-linux-gnu": "893a53b5f78ec9eb7ac4ad3b3bd375d2ddad8ca1687ed5867621ec157eddbea5",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_md5(triple):
     HASHES = {
@@ -45,7 +43,7 @@ def rustc_md5(triple):
         "i686-unknown-linux-gnu": "932c698c242238a68530c2c15fd0b810",
         "x86_64-unknown-linux-gnu": "b83d7a1a90c2d80bef97a518022948c8",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_sha256(triple):
     HASHES = {
@@ -56,8 +54,7 @@ def rustc_sha256(triple):
         "i686-unknown-linux-gnu": "16273afc0540b4353e54faab6b73e16310ae724f3dc941938bf09129b08bed03",
         "x86_64-unknown-linux-gnu": "e9d27a72900da33c1bbd0e59dd42fd6414c6bcdfa33593fb7c7360068406394a",
     }
-    return get_hash(HASHES, triple)
-
+    return get_by_triple(HASHES, triple)
 
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=43e1f1fb9c0ee3af66693d8c4fecafa8"
 
