@@ -2,7 +2,7 @@
 # Recipe for cargo 20160821
 # This corresponds to rust release 1.12.0
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -17,7 +17,7 @@ def cargo_md5(triple):
         "i686-unknown-linux-gnu": "6b1ecfcdf8f04c596a66e04b50319a92",
         "x86_64-unknown-linux-gnu": "db8f4a71394eb2d02d9b467821847f93",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def cargo_sha256(triple):
     HASHES = {
@@ -28,7 +28,18 @@ def cargo_sha256(triple):
         "i686-unknown-linux-gnu": "46f22e9333f64d2aeff34be0a180b3a49b5a68e9f4a9cae8fe2814590f5a30a5",
         "x86_64-unknown-linux-gnu": "bf91da07e7cf81c5ba2d0fc453cb21edbf0d26def4f1a28093bf10851cc017c0",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
+
+def cargo_url(triple):
+    URLS = {
+        "aarch64-unknown-linux-gnu": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-aarch64-unknown-linux-gnu.tar.gz",
+        "arm-unknown-linux-gnueabi": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-arm-unknown-linux-gnueabi.tar.gz",
+        "arm-unknown-linux-gnueabihf": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-arm-unknown-linux-gnueabihf.tar.gz",
+        "armv7-unknown-linux-gnueabihf": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-armv7-unknown-linux-gnueabihf.tar.gz",
+        "i686-unknown-linux-gnu": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-i686-unknown-linux-gnu.tar.gz",
+        "x86_64-unknown-linux-gnu": "https://static.rust-lang.org/cargo-dist/2016-08-21/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz",
+    }
+    return get_by_triple(URLS, triple)
 
 DEPENDS += "rust-bin (= 1.12.0)"
 LIC_FILES_CHKSUM = "\

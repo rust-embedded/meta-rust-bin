@@ -1,5 +1,5 @@
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -16,10 +16,9 @@ def rust_std_md5(triple):
         "mips-unknown-linux-gnu": "b88bda2ab51fe8749ed5c68f76a2135c",
         "mipsel-unknown-linux-gnu": "ec99e8fbeabf52bbc918aca90e3821de",
         "powerpc-unknown-linux-gnu": "d80e1f04e4386525aa504d978ca87fd3",
-        "powerpc64-unknown-linux-gnu": "5741762256c0aee52feff980f690cf30",
         "x86_64-unknown-linux-gnu": "ac9c973888cc5d85572f3a242d43fb98",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rust_std_sha256(triple):
     HASHES = {
@@ -31,10 +30,9 @@ def rust_std_sha256(triple):
         "mips-unknown-linux-gnu": "0be94817bc17e83c34e087cf5e78e1fb23a109270707cc5798080dd7c3df3e7c",
         "mipsel-unknown-linux-gnu": "249ec949d0fc2a758aaf503a362335c6876b9d093293d4f9bb86ab04330c6461",
         "powerpc-unknown-linux-gnu": "8a6e0fefb0c23bb54e4a136f0630169bb7bcb50cda74fa5e6a494d2f8850b0c1",
-        "powerpc64-unknown-linux-gnu": "7af758ccb74d98d289d13c05ff8961076062c2da7aa8b61493a2535b968a7910",
         "x86_64-unknown-linux-gnu": "87637e4f669d42ee7334a02f7f92ae81a9c41cc569e9e3354b0ca84ec251b78f",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_md5(triple):
     HASHES = {
@@ -45,7 +43,7 @@ def rustc_md5(triple):
         "i686-unknown-linux-gnu": "53fc14f02750f17391fa3925b8076473",
         "x86_64-unknown-linux-gnu": "c66a083f0b8add2e85c50b5146c67a2b",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def rustc_sha256(triple):
     HASHES = {
@@ -56,7 +54,7 @@ def rustc_sha256(triple):
         "i686-unknown-linux-gnu": "506bc2d49e5e71d143459a95b67d16b257c69a9c155219a87b80aa84732f4ddf",
         "x86_64-unknown-linux-gnu": "abac14debf905a8beeffcbe6d168184de94fef3390f1d509890e32477a54cfad",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=43e1f1fb9c0ee3af66693d8c4fecafa8"
 

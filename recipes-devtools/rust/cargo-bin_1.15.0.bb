@@ -2,7 +2,7 @@
 # Recipe for cargo 20170131
 # This corresponds to rust release 1.15.0
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -17,7 +17,7 @@ def cargo_md5(triple):
         "i686-unknown-linux-gnu": "24d4eda62991bfbaecb3a6d1e09df143",
         "x86_64-unknown-linux-gnu": "ad2b513d591f35271f1041e2e04f484c",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def cargo_sha256(triple):
     HASHES = {
@@ -28,7 +28,18 @@ def cargo_sha256(triple):
         "i686-unknown-linux-gnu": "f20adfdcd6fb61c1252034e998998ec349c8a6b05c0320e47a539b0f6d1c76fa",
         "x86_64-unknown-linux-gnu": "0655713cacab054e8e5a33e742081eebec8531a8c77d28a4294e6496123e8ab1",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
+
+def cargo_url(triple):
+    URLS = {
+        "aarch64-unknown-linux-gnu": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-aarch64-unknown-linux-gnu.tar.gz",
+        "arm-unknown-linux-gnueabi": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-arm-unknown-linux-gnueabi.tar.gz",
+        "arm-unknown-linux-gnueabihf": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-arm-unknown-linux-gnueabihf.tar.gz",
+        "armv7-unknown-linux-gnueabihf": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-armv7-unknown-linux-gnueabihf.tar.gz",
+        "i686-unknown-linux-gnu": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-i686-unknown-linux-gnu.tar.gz",
+        "x86_64-unknown-linux-gnu": "https://static.rust-lang.org/dist/2017-01-31/cargo-0.16.0-x86_64-unknown-linux-gnu.tar.gz",
+    }
+    return get_by_triple(URLS, triple)
 
 DEPENDS += "rust-bin (= 1.15.0)"
 LIC_FILES_CHKSUM = "\

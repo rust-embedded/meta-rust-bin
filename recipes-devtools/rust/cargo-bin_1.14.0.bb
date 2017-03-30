@@ -2,7 +2,7 @@
 # Recipe for cargo 298a0127f703d4c2500bb06d309488b92ef84ae1
 # This corresponds to rust release 1.14.0
 
-def get_hash(hashes, triple):
+def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
@@ -17,7 +17,7 @@ def cargo_md5(triple):
         "i686-unknown-linux-gnu": "aded776463929b457690423977ad4fa1",
         "x86_64-unknown-linux-gnu": "ad23654285541462e537b7187c2aaa75",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
 
 def cargo_sha256(triple):
     HASHES = {
@@ -28,7 +28,18 @@ def cargo_sha256(triple):
         "i686-unknown-linux-gnu": "03861ffd057032f201b723fa9018fbe18c5c8a76f0e9ad7fa52ee9bc2305d0d5",
         "x86_64-unknown-linux-gnu": "349a01c2c87f6b5c5cd39ddc6a86a2f6b009a05a48c95a633beea27ac22fed6b",
     }
-    return get_hash(HASHES, triple)
+    return get_by_triple(HASHES, triple)
+
+def cargo_url(triple):
+    URLS = {
+        "aarch64-unknown-linux-gnu": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-aarch64-unknown-linux-gnu.tar.gz",
+        "arm-unknown-linux-gnueabi": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-arm-unknown-linux-gnueabi.tar.gz",
+        "arm-unknown-linux-gnueabihf": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-arm-unknown-linux-gnueabihf.tar.gz",
+        "armv7-unknown-linux-gnueabihf": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-armv7-unknown-linux-gnueabihf.tar.gz",
+        "i686-unknown-linux-gnu": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-i686-unknown-linux-gnu.tar.gz",
+        "x86_64-unknown-linux-gnu": "https://s3.amazonaws.com/rust-lang-ci/cargo-builds/298a0127f703d4c2500bb06d309488b92ef84ae1/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz",
+    }
+    return get_by_triple(URLS, triple)
 
 DEPENDS += "rust-bin (= 1.14.0)"
 LIC_FILES_CHKSUM = "\
