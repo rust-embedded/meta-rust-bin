@@ -177,7 +177,7 @@ EOF
 
 write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
-LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=43e1f1fb9c0ee3af66693d8c4fecafa8"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=c709a09d1b062d9a908e3631c1e1cdf5"
 
 include rust-bin.inc
 EOF
@@ -229,7 +229,7 @@ EOF
 DEPENDS += "rust-bin (= ${TARGET_VERSION})"
 LIC_FILES_CHKSUM = "\\
     file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \\
-    file://LICENSE-MIT;md5=362255802eb5aa87810d12ddf3cfedb4 \\
+    file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \\
 "
 
 include cargo-bin.inc

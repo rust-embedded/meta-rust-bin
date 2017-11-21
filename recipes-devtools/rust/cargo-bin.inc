@@ -7,8 +7,6 @@ inherit rust-common
 
 CARGO_HOST_TARGET = "${@rust_target(d, 'HOST')}"
 
-S = "${WORKDIR}/cargo-nightly-${CARGO_HOST_TARGET}"
-
 do_install() {
     ${S}/install.sh --destdir="${D}" --prefix="${prefix}"
     rm -f ${D}${prefix}/lib/rustlib/uninstall.sh
@@ -26,6 +24,7 @@ python () {
                   d.getVar("PN", True) + "-" + pv + "-" + target + ".tar.gz"))
     src_uri = d.getVar("SRC_URI", True).split()
     d.setVar("SRC_URI", ' '.join(src_uri + [cargo_uri]))
+    d.setVar("S", "{}/{}".format(d.getVar("WORKDIR", True), cargo_url(target).split('/')[-1].replace('.tar.gz', '')))
 }
 
 BBCLASSEXTEND += "native nativesdk"
