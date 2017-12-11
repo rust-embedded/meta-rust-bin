@@ -46,6 +46,9 @@ linker = "${WRAPPER_DIR}/cc-wrapper.sh"
 
 [build]
 rustflags = ["-C", "rpath"]
+
+[profile.release]
+debug = true
 EOF
 }
 
