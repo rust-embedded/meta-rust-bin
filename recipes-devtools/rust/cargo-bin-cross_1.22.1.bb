@@ -41,10 +41,10 @@ def cargo_url(triple):
     }
     return get_by_triple(URLS, triple)
 
-DEPENDS += "rust-bin (= 1.22.1)"
+DEPENDS += "rust-bin-cross-${TARGET_ARCH} (= 1.22.1)"
 LIC_FILES_CHKSUM = "\
     file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \
     file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \
 "
 
-include cargo-bin.inc
+require cargo-bin-cross.inc

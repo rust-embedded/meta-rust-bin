@@ -3,11 +3,24 @@ HOMEPAGE = "https://rust-lang.org"
 LICENSE = "Apache-2.0 | MIT"
 SECTION = "devel"
 
+inherit cross
 inherit rust-common
+
+PN = "cargo-bin-cross-${TARGET_ARCH}"
 
 CARGO_HOST_TARGET = "${@rust_target(d, 'HOST')}"
 
-do_install() {
+SYSROOT_DIRS_NATIVE += "${prefix}"
+SYSROOT_DIRS_BLACKLIST += "\
+    ${prefix}/share \
+    ${prefix}/etc \
+"
+
+# Stripping fails because of mixed arch types (host and target)
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_SYSROOT_STRIP = "1"
+
+fakeroot do_install() {
     ${S}/install.sh --destdir="${D}" --prefix="${prefix}"
     rm -f ${D}${prefix}/lib/rustlib/uninstall.sh
     rm -f ${D}${prefix}/lib/rustlib/install.log
@@ -26,5 +39,3 @@ python () {
     d.setVar("SRC_URI", ' '.join(src_uri + [cargo_uri]))
     d.setVar("S", "{}/{}".format(d.getVar("WORKDIR", True), cargo_url(target).split('/')[-1].replace('.tar.gz', '')))
 }
-
-BBCLASSEXTEND += "native nativesdk"

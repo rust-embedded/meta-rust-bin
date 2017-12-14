@@ -1,24 +1,18 @@
 inherit rust-common
 
+DEPENDS += "cargo-bin-cross-${TARGET_ARCH}"
+
 # Move CARGO_HOME from default of ~/.cargo
 export CARGO_HOME = "${WORKDIR}/cargo_home"
 
 # If something fails while building, this might give useful information
 export RUST_BACKTRACE = "1"
 
-DEPENDS += "\
-    rust-bin \
-    cargo-bin-native \
-"
-
 # Do build out-of-tree
 B = "${WORKDIR}/target"
 export CARGO_TARGET_DIR = "${B}"
 
-# When cross-compiling, explicitly set target. When natively compiling target
-# the BUILD system.
 RUST_TARGET = "${@rust_target(d, 'TARGET')}"
-RUST_TARGET_class-native = "${@rust_target(d, 'BUILD')}"
 RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 
 # Additional flags passed directly to the "cargo build" invocation
@@ -132,5 +126,4 @@ cargo_do_install() {
     fi
 }
 
-BBCLASSEXTEND += "native nativesdk"
 EXPORT_FUNCTIONS do_configure do_compile do_install

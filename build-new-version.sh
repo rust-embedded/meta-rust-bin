@@ -179,7 +179,7 @@ write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=c709a09d1b062d9a908e3631c1e1cdf5"
 
-include rust-bin.inc
+require rust-bin-cross.inc
 EOF
 }
 
@@ -226,26 +226,26 @@ EOF
     }
     return get_by_triple(URLS, triple)
 
-DEPENDS += "rust-bin (= ${TARGET_VERSION})"
+DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION})"
 LIC_FILES_CHKSUM = "\\
     file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \\
     file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \\
 "
 
-include cargo-bin.inc
+require cargo-bin-cross.inc
 EOF
 }
 
 download_files
 
-RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin_${TARGET_VERSION}.bb"
-CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin_${TARGET_VERSION}.bb"
+RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin-cross_${TARGET_VERSION}.bb"
+CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin-cross_${TARGET_VERSION}.bb"
 
 # create/clear files
 echo "" >${RUST_BIN_RECIPE}
 echo "" >${CARGO_BIN_RECIPE}
 
-# write the rust-bin recipe
+# write the rust recipe
 write_get_by_triple
 write_std_md5
 write_std_sha256

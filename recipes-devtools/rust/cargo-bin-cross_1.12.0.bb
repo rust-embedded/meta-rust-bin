@@ -1,6 +1,6 @@
 
 # Recipe for cargo 20160821
-# This corresponds to rust release 1.12.1
+# This corresponds to rust release 1.12.0
 
 def get_by_triple(hashes, triple):
     try:
@@ -41,10 +41,10 @@ def cargo_url(triple):
     }
     return get_by_triple(URLS, triple)
 
-DEPENDS += "rust-bin (= 1.12.1)"
+DEPENDS += "rust-bin-cross-${TARGET_ARCH} (= 1.12.0)"
 LIC_FILES_CHKSUM = "\
     file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \
     file://LICENSE-MIT;md5=362255802eb5aa87810d12ddf3cfedb4 \
 "
 
-include cargo-bin.inc
+require cargo-bin-cross.inc
