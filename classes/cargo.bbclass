@@ -19,6 +19,7 @@ export CARGO_TARGET_DIR = "${B}"
 # the BUILD system.
 RUST_TARGET = "${@rust_target(d, 'TARGET')}"
 RUST_TARGET_class-native = "${@rust_target(d, 'BUILD')}"
+RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
@@ -41,8 +42,11 @@ CARGO_BUILD_FLAGS = "\
 
 create_cargo_config() {
     cat >${CARGO_HOME}/config << EOF
+[target.${RUST_BUILD}]
+linker = "${WRAPPER_DIR}/linker-native-wrapper.sh"
+
 [target.${RUST_TARGET}]
-linker = "${WRAPPER_DIR}/cc-wrapper.sh"
+linker = "${WRAPPER_DIR}/linker-wrapper.sh"
 
 [build]
 rustflags = ["-C", "rpath"]
@@ -64,6 +68,18 @@ cargo_do_configure() {
     echo "${CC} \$@" >>"${WRAPPER_DIR}/cc-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/cc-wrapper.sh"
 
+    echo "#!/bin/sh" >"${WRAPPER_DIR}/cc-native-wrapper.sh"
+    echo "${BUILD_CC} \$@" >>"${WRAPPER_DIR}/cc-native-wrapper.sh"
+    chmod +x "${WRAPPER_DIR}/cc-native-wrapper.sh"
+
+    echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-wrapper.sh"
+    echo "${CC} ${LDFLAGS} \$@" >>"${WRAPPER_DIR}/linker-wrapper.sh"
+    chmod +x "${WRAPPER_DIR}/linker-wrapper.sh"
+
+    echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-native-wrapper.sh"
+    echo "${BUILD_CC} ${BUILD_LDFLAGS} \$@" >>"${WRAPPER_DIR}/linker-native-wrapper.sh"
+    chmod +x "${WRAPPER_DIR}/linker-native-wrapper.sh"
+
     # Create our global config in CARGO_HOME
     create_cargo_config
 }
@@ -76,8 +92,12 @@ def build_type(d):
         return "release"
 
 cargo_do_compile() {
-    export CC="${WRAPPER_DIR}/cc-wrapper.sh"
+    export TARGET_CC="${WRAPPER_DIR}/cc-wrapper.sh"
+    export CC="${WRAPPER_DIR}/cc-native-wrapper.sh"
+    export TARGET_LD="${WRAPPER_DIR}/ld-wrapper.sh"
+    export LD="${WRAPPER_DIR}/ld-native-wrapper.sh"
     export PKG_CONFIG_ALLOW_CROSS="1"
+    export LDFLAGS=""
     bbnote "which rustc:" `which rustc`
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
