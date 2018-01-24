@@ -6,8 +6,10 @@ SECTION = "devel"
 inherit cross
 inherit rust-common
 
-# Native compiler is installed as a bonus with the cross compiler.
-PROVIDES += "rust-bin-native"
+# Required to link binaries
+DEPENDS += "gcc-cross-${TARGET_ARCH}"
+
+PN = "rust-bin-cross-${TARGET_ARCH}"
 
 # Extra architectures to install standard library for. Must match one of the
 # standard rust targets. The standard library for the default host and target
@@ -20,7 +22,17 @@ RUST_ALL_TARGETS = "${RUST_BUILD_TARGET} ${RUST_TARGET_TARGET} ${EXTRA_RUST_TARG
 
 S = "${WORKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
 
-do_install() {
+SYSROOT_DIRS_NATIVE += "${prefix}"
+SYSROOT_DIRS_BLACKLIST += "\
+    ${prefix}/share \
+    ${prefix}/etc \
+"
+
+# Stripping fails because of mixed arch types (host and target)
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_SYSROOT_STRIP = "1"
+
+fakeroot do_install() {
     # Install rustc
     ${S}/install.sh --destdir="${D}" --prefix="${prefix}"
 
@@ -48,10 +60,4 @@ python () {
                     (base_uri, target, rust_std_md5(target), rust_std_sha256(target)) for target in targets]
     src_uri = d.getVar("SRC_URI", True).split()
     d.setVar("SRC_URI", ' '.join(src_uri + [rustc_src_uri] + std_src_uris))
-}
-
-SYSROOT_PREPROCESS_FUNCS = "rust_process_sysroot"
-rust_process_sysroot() {
-    sysroot_stage_dir ${D}${prefix}/bin ${SYSROOT_DESTDIR}${prefix}/bin
-    sysroot_stage_dir ${D}${prefix}/lib ${SYSROOT_DESTDIR}${prefix}/lib
 }

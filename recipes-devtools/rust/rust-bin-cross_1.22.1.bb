@@ -58,4 +58,4 @@ def rustc_sha256(triple):
 
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=c709a09d1b062d9a908e3631c1e1cdf5"
 
-include rust-bin.inc
+include rust-bin-cross.inc
