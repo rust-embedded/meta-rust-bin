@@ -10,11 +10,13 @@ PN = "cargo-bin-cross-${TARGET_ARCH}"
 
 CARGO_HOST_TARGET = "${@rust_target(d, 'HOST')}"
 
-SYSROOT_DIRS_NATIVE += "${prefix}"
-SYSROOT_DIRS_BLACKLIST += "\
-    ${prefix}/share \
-    ${prefix}/etc \
-"
+SYSROOT_PREPROCESS_FUNCS = "cargo_process_sysroot"
+cargo_process_sysroot() {
+    sysroot_stage_dir ${D}${prefix}/bin ${SYSROOT_DESTDIR}${prefix}/bin
+    sysroot_stage_dir ${D}${prefix}/lib ${SYSROOT_DESTDIR}${prefix}/lib
+    rm -rf ${SYSROOT_DESTDIR}${prefix}/share
+    rm -rf ${SYSROOT_DESTDIR}${prefix}/etc
+}
 
 # Stripping fails because of mixed arch types (host and target)
 INHIBIT_PACKAGE_STRIP = "1"

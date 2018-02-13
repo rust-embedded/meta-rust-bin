@@ -22,11 +22,13 @@ RUST_ALL_TARGETS = "${RUST_BUILD_TARGET} ${RUST_TARGET_TARGET} ${EXTRA_RUST_TARG
 
 S = "${WORKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
 
-SYSROOT_DIRS_NATIVE += "${prefix}"
-SYSROOT_DIRS_BLACKLIST += "\
-    ${prefix}/share \
-    ${prefix}/etc \
-"
+SYSROOT_PREPROCESS_FUNCS = "rust_process_sysroot"
+rust_process_sysroot() {
+    sysroot_stage_dir ${D}${prefix}/bin ${SYSROOT_DESTDIR}${prefix}/bin
+    sysroot_stage_dir ${D}${prefix}/lib ${SYSROOT_DESTDIR}${prefix}/lib
+    rm -rf ${SYSROOT_DESTDIR}${prefix}/share
+    rm -rf ${SYSROOT_DESTDIR}${prefix}/etc
+}
 
 # Stripping fails because of mixed arch types (host and target)
 INHIBIT_PACKAGE_STRIP = "1"
