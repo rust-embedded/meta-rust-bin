@@ -22,6 +22,9 @@ RUST_ALL_TARGETS = "${RUST_BUILD_TARGET} ${RUST_TARGET_TARGET} ${EXTRA_RUST_TARG
 
 S = "${WORKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
 
+# Relocating WORKDIR doesn't matter to installer
+S[vardepsexclude] += "WORKDIR"
+
 SYSROOT_DIRS_NATIVE += "${prefix}"
 SYSROOT_DIRS_BLACKLIST += "\
     ${prefix}/share \
