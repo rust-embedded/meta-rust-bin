@@ -8,6 +8,10 @@ def rust_target(d, spec_type):
     arch = d.getVar('%s_ARCH' % spec_type, True)
     os = d.getVar('%s_OS' % spec_type, True)
 
+    # Make sure that tasks properly recalculate after ARCH or OS change
+    d.appendVarFlag("rust_target", "vardeps", " %s_ARCH" % spec_type)
+    d.appendVarFlag("rust_target", "vardeps", " %s_OS" % spec_type)
+
     # Sometimes bitbake mixes the calling convention into the OS, sometimes it
     # doesn't... let's just take the first part
     os = os.split('-')[0]
