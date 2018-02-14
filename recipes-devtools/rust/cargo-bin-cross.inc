@@ -36,6 +36,9 @@ python () {
                  (cargo_url(target), cargo_md5(target), cargo_sha256(target),
                   d.getVar("PN", True) + "-" + pv + "-" + target + ".tar.gz"))
     src_uri = d.getVar("SRC_URI", True).split()
+    cargo_extract_path = cargo_url(target).split('/')[-1].replace('.tar.gz', '')
     d.setVar("SRC_URI", ' '.join(src_uri + [cargo_uri]))
-    d.setVar("S", "{}/{}".format(d.getVar("WORKDIR", True), cargo_url(target).split('/')[-1].replace('.tar.gz', '')))
+    d.setVar("S", "${{WORKDIR}}/{}".format(cargo_extract_path))
+    d.appendVarFlag("S", "vardeps", " cargo_url")
+    d.appendVarFlag("S", "vardepsexclude", " WORKDIR")
 }
