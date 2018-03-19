@@ -62,4 +62,10 @@ def rust_target(d, spec_type):
 
     return target
 
+# Yocto adds a vardep to rust_target on "rust_target[vardeps]"... it really
+# doesn't like us generating ARCH and OS dynamically. We don't actually care
+# about the "rust_target[vardeps]" string, we care about the vardeps that
+# string specifies (*_ARCH/*_OS), so it is safe to exclude.
+rust_target[vardepsexclude] += "rust_target[vardeps]"
+
 RUST_BASE_URI := "https://static.rust-lang.org"
