@@ -38,12 +38,15 @@ def rust_target(d, spec_type):
         arch = "x86_64"
     elif arch in ["xscale", "arm", "armv6l", "armv7l"]:
         # Rust requires NEON/VFP in order to build for armv7, else fall back to v6
-        if all(x in tune for x in ["armv7a", "neon", "callconvention-hard"]):
+        tune_armv7 = any(t.startswith("armv7") for t in tune)
+        tune_neon = "neon" in tune
+        tune_cchard = "callconvention-hard" in tune
+        if all([tune_armv7, tune_neon, tune_cchard]):
             arch = "armv7"
             callconvention = "gnueabihf"
         else:
             arch = "arm"
-            if "callconvention-hard" in tune:
+            if tune_cchard:
                 callconvention = "gnueabihf"
             else:
                 callconvention = "gnueabi"
