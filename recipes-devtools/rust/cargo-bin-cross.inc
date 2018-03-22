@@ -27,6 +27,7 @@ fakeroot do_install() {
     rm -f ${D}${prefix}/lib/rustlib/components
     rm -f ${D}${prefix}/lib/rustlib/rust-installer-version
 }
+do_install[depends] += "virtual/fakeroot-native:do_populate_sysroot"
 
 python () {
     pv = d.getVar("PV", True)
