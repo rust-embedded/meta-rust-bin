@@ -33,7 +33,7 @@ CARGO_BUILD_FLAGS = "\
     --manifest-path ${S}/Cargo.toml \
     --target=${RUST_TARGET} \
     ${CARGO_BUILD_TYPE} \
-    ${@base_conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
+    ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
     ${EXTRA_CARGO_FLAGS} \
 "
 
