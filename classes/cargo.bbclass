@@ -1,6 +1,11 @@
 inherit rust-common
 
-DEPENDS += "cargo-bin-cross-${TARGET_ARCH}"
+# Many crates rely on pkg-config to find native versions of their libraries for
+# linking - do the simple thing and make it generally available.
+DEPENDS_append = "\
+    cargo-bin-cross-${TARGET_ARCH} \
+    pkgconfig-native \
+"
 
 # Move CARGO_HOME from default of ~/.cargo
 export CARGO_HOME = "${WORKDIR}/cargo_home"
