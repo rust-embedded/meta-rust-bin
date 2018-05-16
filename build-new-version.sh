@@ -177,7 +177,7 @@ EOF
 
 write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
-LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=c709a09d1b062d9a908e3631c1e1cdf5"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=99c369ad81a36cd5b27f6c6968d01055"
 
 require rust-bin-cross.inc
 EOF
