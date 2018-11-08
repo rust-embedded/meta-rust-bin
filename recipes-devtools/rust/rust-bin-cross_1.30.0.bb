@@ -56,6 +56,6 @@ def rustc_sha256(triple):
     }
     return get_by_triple(HASHES, triple)
 
-LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=99c369ad81a36cd5b27f6c6968d01055"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=66ddc8ecd998476b7cd5732e8c3a6c1d"
 
 require rust-bin-cross.inc
