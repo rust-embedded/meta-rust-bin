@@ -175,9 +175,22 @@ EOF
 EOF
 }
 
+copyright_md5sum=NULL
+get_copyright_md5sum() {
+   for triple in $RUSTC_TRIPLES; do
+	echo $triple
+	rustcfile=rustc-${TARGET_VERSION}-${triple}
+	tar -zxvf $rustcfile.tar.gz ${rustcfile}/COPYRIGHT
+	copyright_md5sum="$( md5sum ${rustcfile}/COPYRIGHT | cut -d ' ' -f1 )"
+	echo $copyright_md5sum
+	break
+   done
+}
+
+
 write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
-LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=99c369ad81a36cd5b27f6c6968d01055"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=${copyright_md5sum}"
 
 require rust-bin-cross.inc
 EOF
@@ -251,6 +264,7 @@ write_std_md5
 write_std_sha256
 write_rustc_md5
 write_rustc_sha256
+get_copyright_md5sum
 write_final_contents
 
 # write the cargo recipe
