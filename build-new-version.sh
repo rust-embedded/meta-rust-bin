@@ -38,11 +38,15 @@ armv7-unknown-linux-gnueabihf
 i686-unknown-linux-gnu
 x86_64-unknown-linux-gnu"
 
+download() {
+    echo "download $@"
+    curl -# -O $@
+}
+
 dlfile() {
     component="$1"
     triple="$2"
-    echo "Downloading $component for triple $triple..."
-    wget https://static.rust-lang.org/dist/${component}-${TARGET_VERSION}-${triple}.tar.gz
+    download https://static.rust-lang.org/dist/${component}-${TARGET_VERSION}-${triple}.tar.gz
 }
 
 get_md5sum() {
@@ -83,11 +87,11 @@ cargo_filename() {
 }
 
 download_files() {
-    wget https://static.rust-lang.org/dist/${CHANNEL_FILE}
+    download https://static.rust-lang.org/dist/${CHANNEL_FILE}
 
     # cargo for each supported host triple
     for triple in $RUSTC_TRIPLES; do
-        wget $(cargo_url $triple)
+        download $(cargo_url $triple)
     done
 
     # rustc
