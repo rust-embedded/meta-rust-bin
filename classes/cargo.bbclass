@@ -33,9 +33,12 @@ CARGO_DEBUG_DIR = "${B}/${RUST_TARGET}/debug"
 CARGO_RELEASE_DIR = "${B}/${RUST_TARGET}/release"
 WRAPPER_DIR = "${WORKDIR}/wrappers"
 
+# Set the Cargo manifest path to the typical location
+CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
+
 CARGO_BUILD_FLAGS = "\
     --verbose \
-    --manifest-path ${S}/Cargo.toml \
+    --manifest-path ${CARGO_MANIFEST_PATH} \
     --target=${RUST_TARGET} \
     ${CARGO_BUILD_TYPE} \
     ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
