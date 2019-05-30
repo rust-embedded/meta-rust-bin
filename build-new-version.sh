@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This script can be run to add a new version of rust to those supported
 # in the project.  It automates away some of the tedium of working
@@ -14,29 +14,31 @@ if [ -z "$TARGET_VERSION" ]; then
     exit 1
 fi
 
-CHANNEL_FILE="channel-rust-${TARGET_VERSION}.toml"
+CHANNEL_FILE="channel-rust-$TARGET_VERSION.toml"
 
-TMPDIR=`mktemp -p $PWD -d`
+TMPDIR=`mktemp -p "$PWD" -d`
 cd "$TMPDIR"
 
-TARGET_TRIPLES="\
-aarch64-unknown-linux-gnu
-arm-unknown-linux-gnueabi
-arm-unknown-linux-gnueabihf
-armv7-unknown-linux-gnueabihf
-i686-unknown-linux-gnu
-mips-unknown-linux-gnu
-mipsel-unknown-linux-gnu
-powerpc-unknown-linux-gnu
-x86_64-unknown-linux-gnu"
+TARGET_TRIPLES=(
+    aarch64-unknown-linux-gnu
+    arm-unknown-linux-gnueabi
+    arm-unknown-linux-gnueabihf
+    armv7-unknown-linux-gnueabihf
+    i686-unknown-linux-gnu
+    mips-unknown-linux-gnu
+    mipsel-unknown-linux-gnu
+    powerpc-unknown-linux-gnu
+    x86_64-unknown-linux-gnu
+)
 
-RUSTC_TRIPLES="\
-aarch64-unknown-linux-gnu
-arm-unknown-linux-gnueabi
-arm-unknown-linux-gnueabihf
-armv7-unknown-linux-gnueabihf
-i686-unknown-linux-gnu
-x86_64-unknown-linux-gnu"
+RUSTC_TRIPLES=(
+    aarch64-unknown-linux-gnu
+    arm-unknown-linux-gnueabi
+    arm-unknown-linux-gnueabihf
+    armv7-unknown-linux-gnueabihf
+    i686-unknown-linux-gnu
+    x86_64-unknown-linux-gnu
+)
 
 download() {
     echo "download $@"
@@ -46,32 +48,32 @@ download() {
 dlfile() {
     component="$1"
     triple="$2"
-    download https://static.rust-lang.org/dist/${component}-${TARGET_VERSION}-${triple}.tar.gz
+    download "https://static.rust-lang.org/dist/$component-$TARGET_VERSION-$triple.tar.gz"
 }
 
 get_md5sum() {
-    md5sum $1 | cut -d ' ' -f1
+    md5sum "$1" | cut -d ' ' -f1
 }
 
 get_sha256sum() {
-    sha256sum $1 | cut -d ' ' -f1
+    sha256sum "$1" | cut -d ' ' -f1
 }
 
 get_rust_md5sum() {
     component="$1"
     triple="$2"
-    get_md5sum ${component}-${TARGET_VERSION}-${triple}.tar.gz
+    get_md5sum "$component-$TARGET_VERSION-$triple.tar.gz"
 }
 
 get_rust_sha256sum() {
     component="$1"
     triple="$2"
-    get_sha256sum ${component}-${TARGET_VERSION}-${triple}.tar.gz
+    get_sha256sum "$component-$TARGET_VERSION-$triple.tar.gz"
 }
 
 cargo_url() {
     local triple="$1"
-    grep -A 3 "^\[pkg.cargo.target.${triple}\]" ${CHANNEL_FILE} | \
+    grep -A 3 "^\[pkg.cargo.target.$triple\]" "$CHANNEL_FILE" | \
         grep '^url =' | \
         cut -d '=' -f2 | \
         tr -d '[" ]'
@@ -83,25 +85,53 @@ cargo_version() {
 
 cargo_filename() {
     local triple="$1"
-    cargo_url $triple | rev | cut -d'/' -f1 | rev
+    cargo_url "$triple" | rev | cut -d'/' -f1 | rev
 }
 
 download_files() {
-    download https://static.rust-lang.org/dist/${CHANNEL_FILE}
+    download "https://static.rust-lang.org/dist/$CHANNEL_FILE"
 
     # cargo for each supported host triple
-    for triple in $RUSTC_TRIPLES; do
-        download $(cargo_url $triple)
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        download "$(cargo_url "$triple")"
     done
 
     # rustc
-    for triple in $RUSTC_TRIPLES; do
-        dlfile rustc ${triple}
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        dlfile rustc "$triple"
     done
 
     # rust-std
-    for triple in $TARGET_TRIPLES; do
-        dlfile rust-std ${triple}
+    for triple in "${TARGET_TRIPLES[@]}"; do
+        dlfile rust-std "$triple"
+    done
+}
+
+CARGO_APACHE_EXPECTED="71b224ca933f0676e26d5c2e2271331c"
+CARGO_MIT_EXPECTED="b377b220f43d747efdec40d69fcaa69d"
+
+check_cargo_license() {
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        cargofile=$(cargo_filename "$triple")
+        cargodir=$(basename "$cargofile" .tar.gz)
+
+        tar -zxf "$cargofile" "$cargodir"/LICENSE-APACHE
+        apache_md5sum="$( md5sum "$cargodir"/LICENSE-APACHE | cut -d ' ' -f1 )"
+
+        tar -zxf "$cargofile" "$cargodir"/LICENSE-MIT
+        mit_md5sum="$( md5sum "$cargodir"/LICENSE-MIT | cut -d ' ' -f1 )"
+
+        if [ "$apache_md5sum" != "$CARGO_APACHE_EXPECTED" ]; then
+            echo "ERROR: Apache license file hash has changed for $cargofile"
+            echo "  Actual: $apache_md5sum"
+            echo "  Expected: $CARGO_APACHE_EXPECTED"
+            exit 1
+        elif [ "$mit_md5sum" != "$CARGO_MIT_EXPECTED" ]; then
+            echo "ERROR: MIT license file hash has changed for $cargofile"
+            echo "  Actual: $mit_md5sum"
+            echo "  Expected: $CARGO_MIT_EXPECTED"
+            exit 1
+        fi
     done
 }
 
@@ -122,8 +152,8 @@ write_std_md5() {
 def rust_std_md5(triple):
     HASHES = {
 EOF
-    for triple in $TARGET_TRIPLES; do
-        echo >>${RUST_BIN_RECIPE} "        \"$triple\": \"$(get_rust_md5sum rust-std $triple)\","
+    for triple in "${TARGET_TRIPLES[@]}"; do
+        echo >>"$RUST_BIN_RECIPE" "        \"$triple\": \"$(get_rust_md5sum rust-std "$triple")\","
     done
     cat <<EOF >>${RUST_BIN_RECIPE}
     }
@@ -132,14 +162,13 @@ EOF
 EOF
 }
 
-
 write_std_sha256() {
     cat <<EOF >>${RUST_BIN_RECIPE}
 def rust_std_sha256(triple):
     HASHES = {
 EOF
-    for triple in $TARGET_TRIPLES; do
-        echo >>${RUST_BIN_RECIPE} "        \"$triple\": \"$(get_rust_sha256sum rust-std $triple)\","
+    for triple in "${TARGET_TRIPLES[@]}"; do
+        echo >>"$RUST_BIN_RECIPE" "        \"$triple\": \"$(get_rust_sha256sum rust-std "$triple")\","
     done
 
     cat <<EOF >>${RUST_BIN_RECIPE}
@@ -154,8 +183,8 @@ write_rustc_md5() {
 def rustc_md5(triple):
     HASHES = {
 EOF
-    for triple in $RUSTC_TRIPLES; do
-        echo >>${RUST_BIN_RECIPE} "        \"$triple\": \"$(get_rust_md5sum rustc $triple)\","
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo >>"$RUST_BIN_RECIPE" "        \"$triple\": \"$(get_rust_md5sum rustc "$triple")\","
     done
     cat <<EOF >>${RUST_BIN_RECIPE}
     }
@@ -169,10 +198,10 @@ write_rustc_sha256() {
 def rustc_sha256(triple):
     HASHES = {
 EOF
-    for triple in $RUSTC_TRIPLES; do
-        echo >>${RUST_BIN_RECIPE} "        \"$triple\": \"$(get_rust_sha256sum rustc $triple)\","
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo >>"$RUST_BIN_RECIPE" "        \"$triple\": \"$(get_rust_sha256sum rustc "$triple")\","
     done
-    cat >>${RUST_BIN_RECIPE} <<EOF
+    cat >>"$RUST_BIN_RECIPE" <<EOF
     }
     return get_by_triple(HASHES, triple)
 
@@ -181,16 +210,15 @@ EOF
 
 copyright_md5sum=NULL
 get_copyright_md5sum() {
-   for triple in $RUSTC_TRIPLES; do
-	echo $triple
-	rustcfile=rustc-${TARGET_VERSION}-${triple}
-	tar -zxvf $rustcfile.tar.gz ${rustcfile}/COPYRIGHT
-	copyright_md5sum="$( md5sum ${rustcfile}/COPYRIGHT | cut -d ' ' -f1 )"
-	echo $copyright_md5sum
-	break
-   done
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo $triple
+        rustcfile=rustc-${TARGET_VERSION}-${triple}
+        tar -zxvf $rustcfile.tar.gz ${rustcfile}/COPYRIGHT
+        copyright_md5sum="$( md5sum ${rustcfile}/COPYRIGHT | cut -d ' ' -f1 )"
+        echo $copyright_md5sum
+        break
+    done
 }
-
 
 write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
@@ -214,8 +242,8 @@ def get_by_triple(hashes, triple):
 def cargo_md5(triple):
     HASHES = {
 EOF
-    for triple in $RUSTC_TRIPLES; do
-        echo >>${CARGO_BIN_RECIPE} "        \"$triple\": \"$(get_md5sum $(cargo_filename $triple))\","
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo >>"$CARGO_BIN_RECIPE" "        \"$triple\": \"$(get_md5sum "$(cargo_filename "$triple")")\","
     done
     cat <<EOF >>${CARGO_BIN_RECIPE}
     }
@@ -224,8 +252,8 @@ EOF
 def cargo_sha256(triple):
     HASHES = {
 EOF
-    for triple in $RUSTC_TRIPLES; do
-        echo >>${CARGO_BIN_RECIPE} "        \"$triple\": \"$(get_sha256sum $(cargo_filename $triple))\","
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo >>"$CARGO_BIN_RECIPE" "        \"$triple\": \"$(get_sha256sum "$(cargo_filename "$triple")")\","
     done
 
     cat <<EOF >>${CARGO_BIN_RECIPE}
@@ -235,8 +263,8 @@ EOF
 def cargo_url(triple):
     URLS = {
 EOF
-    for triple in $RUSTC_TRIPLES; do
-        echo >>${CARGO_BIN_RECIPE} "        \"$triple\": \"$(cargo_url $triple)\","
+    for triple in "${RUSTC_TRIPLES[@]}"; do
+        echo >>"$CARGO_BIN_RECIPE" "        \"$triple\": \"$(cargo_url "$triple")\","
     done
 
     cat <<EOF >>${CARGO_BIN_RECIPE}
@@ -245,8 +273,8 @@ EOF
 
 DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION})"
 LIC_FILES_CHKSUM = "\\
-    file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \\
-    file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \\
+    file://LICENSE-APACHE;md5=${CARGO_APACHE_EXPECTED} \\
+    file://LICENSE-MIT;md5=${CARGO_MIT_EXPECTED} \\
 "
 
 require cargo-bin-cross.inc
@@ -255,12 +283,15 @@ EOF
 
 download_files
 
-RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin-cross_${TARGET_VERSION}.bb"
-CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin-cross_${TARGET_VERSION}.bb"
+# validate extracted cargo license
+check_cargo_license
+
+RUST_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/rust-bin-cross_$TARGET_VERSION.bb"
+CARGO_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/cargo-bin-cross_$TARGET_VERSION.bb"
 
 # create/clear files
-echo "" >${RUST_BIN_RECIPE}
-echo "" >${CARGO_BIN_RECIPE}
+echo "" >"$RUST_BIN_RECIPE"
+echo "" >"$CARGO_BIN_RECIPE"
 
 # write the rust recipe
 write_get_by_triple
@@ -275,4 +306,4 @@ write_final_contents
 write_cargo_recipe
 
 cd -
-rm -rf ${TMPDIR}
+rm -rf "$TMPDIR"

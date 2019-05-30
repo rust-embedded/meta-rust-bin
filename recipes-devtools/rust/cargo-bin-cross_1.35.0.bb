@@ -43,7 +43,7 @@ def cargo_url(triple):
 
 DEPENDS += "rust-bin-cross-${TARGET_ARCH} (= 1.35.0)"
 LIC_FILES_CHKSUM = "\
-    file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \
+    file://LICENSE-APACHE;md5=71b224ca933f0676e26d5c2e2271331c \
     file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \
 "
 
