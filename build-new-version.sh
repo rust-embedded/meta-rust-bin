@@ -105,6 +105,34 @@ download_files() {
     done
 }
 
+cargo_apache_expected="1836efb2eb779966696f473ee8540542"
+cargo_mit_expected="b377b220f43d747efdec40d69fcaa69d"
+
+check_cargo_license() {
+    for triple in $RUSTC_TRIPLES; do
+        cargofile=$(cargo_filename $triple)
+        cargodir=$(basename $cargofile .tar.gz)
+
+        tar -zxf $cargofile ${cargodir}/LICENSE-APACHE
+        apache_md5sum="$( md5sum ${cargodir}/LICENSE-APACHE | cut -d ' ' -f1 )"
+
+        tar -zxf $cargofile ${cargodir}/LICENSE-MIT
+        mit_md5sum="$( md5sum ${cargodir}/LICENSE-MIT | cut -d ' ' -f1 )"
+
+        if [ "$apache_md5sum" != "$cargo_apache_expected" ]; then
+            echo "ERROR: Apache license file hash has changed for $cargofile"
+            echo "  Actual: $apache_md5sum"
+            echo "  Expected: $cargo_apache_expected"
+            exit 1
+        elif [ "$mit_md5sum" != "$cargo_mit_expected" ]; then
+            echo "ERROR: MIT license file hash has changed for $cargofile"
+            echo "  Actual: $mit_md5sum"
+            echo "  Expected: $cargo_mit_expected"
+            exit 1
+        fi
+    done
+}
+
 write_get_by_triple() {
     cat <<EOF >>${RUST_BIN_RECIPE}
 def get_by_triple(hashes, triple):
@@ -131,7 +159,6 @@ EOF
 
 EOF
 }
-
 
 write_std_sha256() {
     cat <<EOF >>${RUST_BIN_RECIPE}
@@ -181,16 +208,15 @@ EOF
 
 copyright_md5sum=NULL
 get_copyright_md5sum() {
-   for triple in $RUSTC_TRIPLES; do
-	echo $triple
-	rustcfile=rustc-${TARGET_VERSION}-${triple}
-	tar -zxvf $rustcfile.tar.gz ${rustcfile}/COPYRIGHT
-	copyright_md5sum="$( md5sum ${rustcfile}/COPYRIGHT | cut -d ' ' -f1 )"
-	echo $copyright_md5sum
-	break
-   done
+    for triple in $RUSTC_TRIPLES; do
+        echo $triple
+        rustcfile=rustc-${TARGET_VERSION}-${triple}
+        tar -zxvf $rustcfile.tar.gz ${rustcfile}/COPYRIGHT
+        copyright_md5sum="$( md5sum ${rustcfile}/COPYRIGHT | cut -d ' ' -f1 )"
+        echo $copyright_md5sum
+        break
+    done
 }
-
 
 write_final_contents() {
     cat <<EOF >>${RUST_BIN_RECIPE}
@@ -245,8 +271,8 @@ EOF
 
 DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION})"
 LIC_FILES_CHKSUM = "\\
-    file://LICENSE-APACHE;md5=1836efb2eb779966696f473ee8540542 \\
-    file://LICENSE-MIT;md5=b377b220f43d747efdec40d69fcaa69d \\
+    file://LICENSE-APACHE;md5=${cargo_apache_expected} \\
+    file://LICENSE-MIT;md5=${cargo_mit_expected} \\
 "
 
 require cargo-bin-cross.inc
@@ -254,6 +280,9 @@ EOF
 }
 
 download_files
+
+# validate extracted cargo license
+check_cargo_license
 
 RUST_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/rust-bin-cross_${TARGET_VERSION}.bb"
 CARGO_BIN_RECIPE="${ROOT_DIR}/recipes-devtools/rust/cargo-bin-cross_${TARGET_VERSION}.bb"
