@@ -107,7 +107,7 @@ download_files() {
     done
 }
 
-CARGO_APACHE_EXPECTED="1836efb2eb779966696f473ee8540542"
+CARGO_APACHE_EXPECTED="71b224ca933f0676e26d5c2e2271331c"
 CARGO_MIT_EXPECTED="b377b220f43d747efdec40d69fcaa69d"
 
 check_cargo_license() {
