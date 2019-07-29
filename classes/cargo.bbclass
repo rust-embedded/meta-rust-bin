@@ -70,19 +70,19 @@ cargo_do_configure() {
     # the compiler binary. cargo/rustc expect a single binary, so we put ${CC}
     # in a wrapper script.
     echo "#!/bin/sh" >"${WRAPPER_DIR}/cc-wrapper.sh"
-    echo "${CC} \$@" >>"${WRAPPER_DIR}/cc-wrapper.sh"
+    echo "${CC} \"\$@\"" >>"${WRAPPER_DIR}/cc-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/cc-wrapper.sh"
 
     echo "#!/bin/sh" >"${WRAPPER_DIR}/cc-native-wrapper.sh"
-    echo "${BUILD_CC} \$@" >>"${WRAPPER_DIR}/cc-native-wrapper.sh"
+    echo "${BUILD_CC} \"\$@\"" >>"${WRAPPER_DIR}/cc-native-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/cc-native-wrapper.sh"
 
     echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-wrapper.sh"
-    echo "${CC} ${LDFLAGS} \$@" >>"${WRAPPER_DIR}/linker-wrapper.sh"
+    echo "${CC} ${LDFLAGS} \"\$@\"" >>"${WRAPPER_DIR}/linker-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/linker-wrapper.sh"
 
     echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-native-wrapper.sh"
-    echo "${BUILD_CC} ${BUILD_LDFLAGS} \$@" >>"${WRAPPER_DIR}/linker-native-wrapper.sh"
+    echo "${BUILD_CC} ${BUILD_LDFLAGS} \"\$@\"" >>"${WRAPPER_DIR}/linker-native-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/linker-native-wrapper.sh"
 
     # Create our global config in CARGO_HOME
