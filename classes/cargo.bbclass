@@ -46,19 +46,23 @@ CARGO_BUILD_FLAGS = "\
 "
 
 create_cargo_config() {
-    cat >${CARGO_HOME}/config << EOF
-[target.${RUST_BUILD}]
-linker = "${WRAPPER_DIR}/linker-native-wrapper.sh"
+    echo > ${CARGO_HOME}/config
+    echo "[target.${RUST_BUILD}]" >> ${CARGO_HOME}/config
+    echo "linker = '${WRAPPER_DIR}/linker-native-wrapper.sh'" >> ${CARGO_HOME}/config
 
-[target.${RUST_TARGET}]
-linker = "${WRAPPER_DIR}/linker-wrapper.sh"
+    if [ "${HOST_SYS}" != "${TARGET_SYS}" ]; then
+        echo >> ${CARGO_HOME}/config
+        echo "[target.${RUST_TARGET}]" >> ${CARGO_HOME}/config
+        echo "linker = '${WRAPPER_DIR}/linker-wrapper.sh'" >> ${CARGO_HOME}/config
+    fi
 
-[build]
-rustflags = ["-C", "rpath"]
+    echo >> ${CARGO_HOME}/config
+    echo "[build]" >> ${CARGO_HOME}/config
+    echo "rustflags = ['-C', 'rpath']" >> ${CARGO_HOME}/config
 
-[profile.release]
-debug = true
-EOF
+    echo >> ${CARGO_HOME}/config
+    echo "[profile.release]" >> ${CARGO_HOME}/config
+    echo "debug = true" >> ${CARGO_HOME}/config
 }
 
 cargo_do_configure() {
