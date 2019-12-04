@@ -26,6 +26,7 @@ def rust_target(d, spec_type):
     # TUNE_FEATURES are always only for the TARGET
     if spec_type == "TARGET":
         tune = d.getVar("TUNE_FEATURES", True).split()
+        tune += d.getVar("MACHINEOVERRIDES", True).split(":")
     else:
         tune = []
 
