@@ -21,7 +21,13 @@ def rust_target(d, spec_type):
 
     # Only GNU calling convention supported for now, but MUSL is a distinct
     # future possibility.
-    callconvention = "gnu"
+    callconvention = d.getVar("RUST_TARGET_USE_MUSL", True)
+    bb.note("Call convention is [%s]" % callconvention)
+
+    if callconvention is None:
+        callconvention = "gnu"
+    else:
+        callconvention = "musl"
 
     # TUNE_FEATURES are always only for the TARGET
     if spec_type == "TARGET":
