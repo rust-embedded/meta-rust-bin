@@ -3,6 +3,7 @@ def rust_target(d, spec_type):
     Convert BitBake system specs into Rust target.
     `spec_type` is one of BUILD, TARGET, or HOST
     '''
+    import re
     spec_type = spec_type.upper()
 
     arch = d.getVar('%s_ARCH' % spec_type, True)
@@ -19,15 +20,19 @@ def rust_target(d, spec_type):
     # The bitbake vendor won't ever match the Rust specs
     vendor = "unknown"
 
-    # Only GNU calling convention supported for now, but MUSL is a distinct
-    # future possibility.
-    callconvention = d.getVar("RUST_TARGET_USE_MUSL", True)
-    bb.note("Call convention is [%s]" % callconvention)
-
-    if callconvention is None:
-        callconvention = "gnu"
-    else:
-        callconvention = "musl"
+    tclibc = d.getVar("TCLIBC", True)
+    callconvention = "gnu"
+    # Only install the musl target toolchain for rust
+    # versions 1.35.0 and above
+    if spec_type == "TARGET" and tclibc == "musl":
+        pnre = re.compile("rust-bin-cross")
+        m = pnre.match(d.getVar("PN", True))
+        if m:
+            pv = d.getVar("PV", True)
+            if pv >= "1.35.0":
+                callconvention = "musl"
+        else:
+            callconvention = "musl"
 
     # TUNE_FEATURES are always only for the TARGET
     if spec_type == "TARGET":
@@ -50,13 +55,13 @@ def rust_target(d, spec_type):
         tune_cchard = "callconvention-hard" in tune
         if all([tune_armv7, tune_neon, tune_cchard]):
             arch = "armv7"
-            callconvention = "gnueabihf"
+            callconvention += "eabihf"
         else:
             arch = "arm"
             if tune_cchard:
-                callconvention = "gnueabihf"
+                callconvention += "eabihf"
             else:
-                callconvention = "gnueabi"
+                callconvention += "eabi"
     elif arch in ["aarch64"]:
         arch = "aarch64"
     elif arch in ["ppc"]:
