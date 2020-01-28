@@ -24,6 +24,7 @@ TARGET_TRIPLES=(
     arm-unknown-linux-gnueabi
     arm-unknown-linux-gnueabihf
     armv7-unknown-linux-gnueabihf
+    armv7-unknown-linux-musleabihf
     i686-unknown-linux-gnu
     mips-unknown-linux-gnu
     mipsel-unknown-linux-gnu
