@@ -9,6 +9,7 @@ def get_by_triple(hashes, triple):
 def rust_std_md5(triple):
     HASHES = {
         "aarch64-unknown-linux-gnu": "6c4ad81415bca48ac330e366311b8a7e",
+        "aarch64-unknown-linux-musl": "c31b839a67bd5a430f6704e2688bee49",
         "arm-unknown-linux-gnueabi": "3e1a27b11f17428290a6133a1b0211c8",
         "arm-unknown-linux-gnueabihf": "1c4d35eaf252f66b2266b31dedef88f8",
         "armv7-unknown-linux-gnueabihf": "9e0610fa920f4a442fd05a54cb7b1b8b",
@@ -23,6 +24,7 @@ def rust_std_md5(triple):
 def rust_std_sha256(triple):
     HASHES = {
         "aarch64-unknown-linux-gnu": "1dc571379b63532227d87a24c6c34848016717e12222270a612ea213cce808bf",
+        "aarch64-unknown-linux-musl": "68b8c641645668dab1570cafe87c73d0a838c523b3208350f51270ad861ffb77",
         "arm-unknown-linux-gnueabi": "d37ec9e1954b866e0cac5a0fbe10d46bd2ae4b1e3b2a7f1d1b184ea8f84582b2",
         "arm-unknown-linux-gnueabihf": "4490cc593924ff49a3c4a832ccfd2c5bdaa8be0e023eee5ef66341a3caab1f74",
         "armv7-unknown-linux-gnueabihf": "04adb1e7775c27f761a8cfb1d0a1960ebf4ff74dee0e60b44d7bcde50fdb76d2",
