@@ -3,7 +3,7 @@ def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
-        bb.fatal("Unsupported triple: %s" % triple)
+        raise bb.parse.SkipRecipe("Unsupported triple: %s" % triple)
 
 
 def rust_std_md5(triple):
