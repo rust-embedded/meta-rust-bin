@@ -3,12 +3,13 @@ def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
-        bb.fatal("Unsupported triple: %s" % triple)
+        raise bb.parse.SkipRecipe("Unsupported triple: %s" % triple)
 
 
 def rust_std_md5(triple):
     HASHES = {
         "aarch64-unknown-linux-gnu": "4333cf381c0a76eab20c763654ce7e27",
+        "aarch64-unknown-linux-musl": "184c4c90a4adb4f3c95663af70b136c8",
         "arm-unknown-linux-gnueabi": "bf00db914952878c771f61b1f39c4168",
         "arm-unknown-linux-gnueabihf": "8c1e10b73a348ff4426b0754c3b691dd",
         "armv7-unknown-linux-gnueabihf": "061d300e8754bac2fa56cea776ba485c",
@@ -23,6 +24,7 @@ def rust_std_md5(triple):
 def rust_std_sha256(triple):
     HASHES = {
         "aarch64-unknown-linux-gnu": "8ceb35380cffa7b07a14401236660b59b73f9d6abb156c33a6d23c30d15827cc",
+        "aarch64-unknown-linux-musl": "89808d4517806242d22732ef5b68c4bb5884d84ba479c884669999a841587b4e",
         "arm-unknown-linux-gnueabi": "9326fe0463f30bbffde98b4e6bcbdea65d60fd106cf4a914a1477ab308e6aa92",
         "arm-unknown-linux-gnueabihf": "6dc1845abfdec6e7963addbd0dcb3b5144bac2d9dc8f29f9f63289d16d67960a",
         "armv7-unknown-linux-gnueabihf": "17da76a8fe849e5de63566b41a7ef5d9f0b588d889b0118566d48617417961a8",

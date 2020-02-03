@@ -21,6 +21,7 @@ cd "$TMPDIR"
 
 TARGET_TRIPLES=(
     aarch64-unknown-linux-gnu
+    aarch64-unknown-linux-musl
     arm-unknown-linux-gnueabi
     arm-unknown-linux-gnueabihf
     armv7-unknown-linux-gnueabihf
@@ -142,7 +143,7 @@ def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
-        bb.fatal("Unsupported triple: %s" % triple)
+        raise bb.parse.SkipRecipe("Unsupported triple: %s" % triple)
 
 
 EOF
@@ -238,7 +239,7 @@ def get_by_triple(hashes, triple):
     try:
         return hashes[triple]
     except:
-        bb.fatal("Unsupported triple: %s" % triple)
+        raise bb.parse.SkipRecipe("Unsupported triple: %s" % triple)
 
 def cargo_md5(triple):
     HASHES = {
