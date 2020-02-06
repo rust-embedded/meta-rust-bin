@@ -77,9 +77,17 @@ cargo_do_configure() {
     echo "${CC} \"\$@\"" >>"${WRAPPER_DIR}/cc-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/cc-wrapper.sh"
 
+    echo "#!/bin/sh" >"${WRAPPER_DIR}/cxx-wrapper.sh"
+    echo "${CXX} \"\$@\"" >>"${WRAPPER_DIR}/cxx-wrapper.sh"
+    chmod +x "${WRAPPER_DIR}/cxx-wrapper.sh"
+
     echo "#!/bin/sh" >"${WRAPPER_DIR}/cc-native-wrapper.sh"
     echo "${BUILD_CC} \"\$@\"" >>"${WRAPPER_DIR}/cc-native-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/cc-native-wrapper.sh"
+
+    echo "#!/bin/sh" >"${WRAPPER_DIR}/cxx-native-wrapper.sh"
+    echo "${BUILD_CXX} \"\$@\"" >>"${WRAPPER_DIR}/cxx-native-wrapper.sh"
+    chmod +x "${WRAPPER_DIR}/cxx-native-wrapper.sh"
 
     echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-wrapper.sh"
     echo "${CC} ${LDFLAGS} \"\$@\"" >>"${WRAPPER_DIR}/linker-wrapper.sh"
@@ -95,7 +103,9 @@ cargo_do_configure() {
 
 cargo_do_compile() {
     export TARGET_CC="${WRAPPER_DIR}/cc-wrapper.sh"
+    export TARGET_CXX="${WRAPPER_DIR}/cxx-wrapper.sh"
     export CC="${WRAPPER_DIR}/cc-native-wrapper.sh"
+    export CXX="${WRAPPER_DIR}/cxx-native-wrapper.sh"
     export TARGET_LD="${WRAPPER_DIR}/ld-wrapper.sh"
     export LD="${WRAPPER_DIR}/ld-native-wrapper.sh"
     export PKG_CONFIG_ALLOW_CROSS="1"
