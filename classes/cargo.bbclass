@@ -22,6 +22,8 @@ RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
+EXTRA_RUSTFLAGS ??= ""
+RUSTFLAGS= "${EXTRA_RUSTFLAGS}"
 
 # Space-separated list of features to enable
 CARGO_FEATURES ??= ""
@@ -114,8 +116,8 @@ cargo_do_compile() {
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
     bbnote "cargo --version" `cargo --version`
-    bbnote cargo build ${CARGO_BUILD_FLAGS}
-    cargo build ${CARGO_BUILD_FLAGS}
+    bbnote ${RUSTFLAGS} cargo build ${CARGO_BUILD_FLAGS}
+    RUSTFLAGS="${RUSTFLAGS}" cargo build ${CARGO_BUILD_FLAGS}
 }
 
 cargo_do_install() {
