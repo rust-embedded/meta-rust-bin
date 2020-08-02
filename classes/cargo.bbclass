@@ -23,7 +23,7 @@ RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
 EXTRA_RUSTFLAGS ??= ""
-RUSTFLAGS= "${EXTRA_RUSTFLAGS}"
+RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
 
 # Space-separated list of features to enable
 CARGO_FEATURES ??= ""
@@ -112,12 +112,13 @@ cargo_do_compile() {
     export LD="${WRAPPER_DIR}/ld-native-wrapper.sh"
     export PKG_CONFIG_ALLOW_CROSS="1"
     export LDFLAGS=""
+    export RUSTFLAGS="${RUSTFLAGS}"
     bbnote "which rustc:" `which rustc`
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
     bbnote "cargo --version" `cargo --version`
-    bbnote ${RUSTFLAGS} cargo build ${CARGO_BUILD_FLAGS}
-    RUSTFLAGS="${RUSTFLAGS}" cargo build ${CARGO_BUILD_FLAGS}
+    bbnote cargo build ${CARGO_BUILD_FLAGS}
+    cargo build ${CARGO_BUILD_FLAGS}
 }
 
 cargo_do_install() {
