@@ -48,12 +48,16 @@ CARGO_BUILD_FLAGS = "\
 "
 
 create_cargo_config() {
-    echo > ${CARGO_HOME}/config
-    echo "[target.${RUST_BUILD}]" >> ${CARGO_HOME}/config
-    echo "linker = '${WRAPPER_DIR}/linker-native-wrapper.sh'" >> ${CARGO_HOME}/config
-
     if [ "${RUST_BUILD}" != "${RUST_TARGET}" ]; then
+        echo > ${CARGO_HOME}/config
+        echo "[target.${RUST_BUILD}]" >> ${CARGO_HOME}/config
+        echo "linker = '${WRAPPER_DIR}/linker-native-wrapper.sh'" >> ${CARGO_HOME}/config
+
         echo >> ${CARGO_HOME}/config
+        echo "[target.${RUST_TARGET}]" >> ${CARGO_HOME}/config
+        echo "linker = '${WRAPPER_DIR}/linker-wrapper.sh'" >> ${CARGO_HOME}/config
+    else
+        echo > ${CARGO_HOME}/config
         echo "[target.${RUST_TARGET}]" >> ${CARGO_HOME}/config
         echo "linker = '${WRAPPER_DIR}/linker-wrapper.sh'" >> ${CARGO_HOME}/config
     fi
