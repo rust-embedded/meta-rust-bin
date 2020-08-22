@@ -24,6 +24,8 @@ TARGET_TRIPLES=(
     aarch64-unknown-linux-musl
     arm-unknown-linux-gnueabi
     arm-unknown-linux-gnueabihf
+    armv5te-unknown-linux-gnueabi
+    armv5te-unknown-linux-musleabi
     armv7-unknown-linux-gnueabihf
     armv7-unknown-linux-musleabihf
     i686-unknown-linux-gnu
