@@ -44,7 +44,7 @@ RUSTC_TRIPLES=(
 
 download() {
     echo "download $@"
-    curl -# -O $@
+    curl --fail -# -O $@
 }
 
 dlfile() {
