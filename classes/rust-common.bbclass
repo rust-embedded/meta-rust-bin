@@ -56,6 +56,9 @@ def rust_target(d, spec_type):
         if all([tune_armv7, tune_neon, tune_cchard]):
             arch = "armv7"
             callconvention += "eabihf"
+        elif any(t.startswith("armv5") for t in tune):
+            arch = "armv5te"
+            callconvention += "eabi"
         else:
             arch = "arm"
             if tune_cchard:
