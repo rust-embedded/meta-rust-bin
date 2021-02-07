@@ -31,6 +31,8 @@ CARGO_FEATURES ??= ""
 # Control the Cargo build type (debug or release)
 CARGO_BUILD_TYPE ?= "--release"
 
+CARGO_INSTALL_DIR ?= "${D}${bindir}"
+
 CARGO_DEBUG_DIR = "${B}/${RUST_TARGET}/debug"
 CARGO_RELEASE_DIR = "${B}/${RUST_TARGET}/release"
 WRAPPER_DIR = "${WORKDIR}/wrappers"
@@ -126,7 +128,7 @@ cargo_do_compile() {
 }
 
 cargo_do_install() {
-    install -d "${D}${bindir}"
+    install -d "${CARGO_INSTALL_DIR}"
     if [ "${CARGO_BUILD_TYPE}" = "--release" ]; then
         local cargo_bindir="${CARGO_RELEASE_DIR}"
     else
@@ -136,7 +138,7 @@ cargo_do_install() {
     local files_installed=""
     for f in "$cargo_bindir"/*; do
         if [ -f "$f" ] && [ -x "$f" ]; then
-            install -m 0755 "$f" "${D}${bindir}"
+            install -m 0755 "$f" "${CARGO_INSTALL_DIR}"
             files_installed="$files_installed $f"
         fi
     done
