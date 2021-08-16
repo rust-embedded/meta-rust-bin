@@ -2,7 +2,7 @@ inherit rust-common
 
 # Many crates rely on pkg-config to find native versions of their libraries for
 # linking - do the simple thing and make it generally available.
-DEPENDS_append = "\
+DEPENDS:append = "\
     cargo-bin-cross-${TARGET_ARCH} \
     pkgconfig-native \
 "
