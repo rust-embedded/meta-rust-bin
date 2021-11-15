@@ -14,6 +14,9 @@ if [ -z "$TARGET_VERSION" ]; then
     exit 1
 fi
 
+# if NIGHTLY_DATE is empty, it should download latest nightly version
+NIGHTLY_DATE="$2"
+
 CHANNEL_FILE="channel-rust-$TARGET_VERSION.toml"
 
 TMPDIR=`mktemp -p "$PWD" -d`
@@ -52,7 +55,11 @@ download() {
 dlfile() {
     component="$1"
     triple="$2"
-    download "https://static.rust-lang.org/dist/$component-$TARGET_VERSION-$triple.tar.gz"
+    if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+        download "https://static.rust-lang.org/dist/$NIGHTLY_DATE/$component-$TARGET_VERSION-$triple.tar.gz"
+    else
+        download "https://static.rust-lang.org/dist/$component-$TARGET_VERSION-$triple.tar.gz"
+    fi
 }
 
 get_md5sum() {
@@ -93,7 +100,11 @@ cargo_filename() {
 }
 
 download_files() {
-    download "https://static.rust-lang.org/dist/$CHANNEL_FILE"
+ if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+        download "https://static.rust-lang.org/dist/$NIGHTLY_DATE/$CHANNEL_FILE"
+    else
+        download "https://static.rust-lang.org/dist/$CHANNEL_FILE"
+    fi
 
     # cargo for each supported host triple
     for triple in "${RUSTC_TRIPLES[@]}"; do
@@ -275,7 +286,7 @@ EOF
     }
     return get_by_triple(URLS, triple)
 
-DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION})"
+DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION}-${NIGHTLY_DATE})"
 LIC_FILES_CHKSUM = "\\
     file://LICENSE-APACHE;md5=${CARGO_APACHE_EXPECTED} \\
     file://LICENSE-MIT;md5=${CARGO_MIT_EXPECTED} \\
@@ -290,8 +301,13 @@ download_files
 # validate extracted cargo license
 check_cargo_license
 
-RUST_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/rust-bin-cross_$TARGET_VERSION.bb"
-CARGO_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/cargo-bin-cross_$TARGET_VERSION.bb"
+if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+    RUST_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/rust-bin-cross_${TARGET_VERSION}-${NIGHTLY_DATE}.bb"
+    CARGO_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/cargo-bin-cross_${TARGET_VERSION}-${NIGHTLY_DATE}.bb"
+else
+    RUST_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/rust-bin-cross_$TARGET_VERSION.bb"
+    CARGO_BIN_RECIPE="$ROOT_DIR/recipes-devtools/rust/cargo-bin-cross_$TARGET_VERSION.bb"
+fi
 
 # create/clear files
 echo "" >"$RUST_BIN_RECIPE"
