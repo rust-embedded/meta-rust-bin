@@ -23,6 +23,13 @@ RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
 EXTRA_RUSTFLAGS ??= ""
+
+def split_ldflags(d):
+    ldflags = d.getVar("LDFLAGS", True)
+    flags =  [ "-C link-arg=" + f for f in ldflags.split(' ') ]
+    return " ".join(flags)
+
+RUSTFLAGS += "${@split_ldflags(d)}"
 RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
 
 # Space-separated list of features to enable
