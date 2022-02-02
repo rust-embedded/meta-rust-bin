@@ -294,7 +294,16 @@ EOF
     }
     return get_by_triple(URLS, triple)
 
-DEPENDS += "rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION}-${NIGHTLY_DATE})"
+EOF
+
+    if is_nightly; then
+        echo >> "$CARGO_BIN_RECIPE" "DEPENDS += \"rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION}-${NIGHTLY_DATE})\""
+    else
+        echo >> "$CARGO_BIN_RECIPE" "DEPENDS += \"rust-bin-cross-\${TARGET_ARCH} (= ${TARGET_VERSION})\""
+    fi
+
+    cat <<EOF >>${CARGO_BIN_RECIPE}
+
 LIC_FILES_CHKSUM = "\\
     file://LICENSE-APACHE;md5=${CARGO_APACHE_EXPECTED} \\
     file://LICENSE-MIT;md5=${CARGO_MIT_EXPECTED} \\
