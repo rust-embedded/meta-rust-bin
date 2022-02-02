@@ -47,6 +47,14 @@ RUSTC_TRIPLES=(
     x86_64-unknown-linux-gnu
 )
 
+is_nightly() {
+    if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+        true
+    else
+        false
+    fi
+}
+
 download() {
     echo "download $@"
     curl --fail -# -O $@
@@ -55,7 +63,7 @@ download() {
 dlfile() {
     component="$1"
     triple="$2"
-    if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+    if is_nightly; then
         download "https://static.rust-lang.org/dist/$NIGHTLY_DATE/$component-$TARGET_VERSION-$triple.tar.gz"
     else
         download "https://static.rust-lang.org/dist/$component-$TARGET_VERSION-$triple.tar.gz"
@@ -100,7 +108,7 @@ cargo_filename() {
 }
 
 download_files() {
-    if [ x"$TARGET_VERSION" == x"nightly" -a "$NIGHTLY_DATE" ]; then
+    if is_nightly; then
         download "https://static.rust-lang.org/dist/$NIGHTLY_DATE/$CHANNEL_FILE"
     else
         download "https://static.rust-lang.org/dist/$CHANNEL_FILE"
