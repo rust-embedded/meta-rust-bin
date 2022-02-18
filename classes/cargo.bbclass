@@ -128,7 +128,6 @@ cargo_do_compile() {
 }
 
 cargo_do_install() {
-    install -d "${CARGO_INSTALL_DIR}"
     if [ "${CARGO_BUILD_TYPE}" = "--release" ]; then
         local cargo_bindir="${CARGO_RELEASE_DIR}"
     else
@@ -136,11 +135,33 @@ cargo_do_install() {
     fi
 
     local files_installed=""
-    for f in "$cargo_bindir"/*; do
-        if [ -f "$f" ] && [ -x "$f" ]; then
-            install -m 0755 "$f" "${CARGO_INSTALL_DIR}"
-            files_installed="$files_installed $f"
-        fi
+
+    for tgt in "${cargo_bindir}"/*; do
+        case $tgt in
+            *.so|*.rlib)
+                install -d "${D}${libdir}"
+                install -m755 "$tgt" "${D}${libdir}"
+                files_installed="$files_installed $tgt"
+                ;;
+            *examples)
+                if [ -d "$tgt" ]; then
+                    for example in "$tgt/"*; do
+                        if [ -f "$example" ] && [ -x "$example" ]; then
+                            install -d "${CARGO_INSTALL_DIR}"
+                            install -m755 "$example" "${CARGO_INSTALL_DIR}"
+                            files_installed="$files_installed $example"
+                        fi
+                    done
+                fi
+                ;;
+            *)
+                if [ -f "$tgt" ] && [ -x "$tgt" ]; then
+                    install -d "${CARGO_INSTALL_DIR}"
+                    install -m755 "$tgt" "${CARGO_INSTALL_DIR}"
+                    files_installed="$files_installed $tgt"
+                fi
+                ;;
+	esac
     done
 
     if [ -z "$files_installed" ]; then
