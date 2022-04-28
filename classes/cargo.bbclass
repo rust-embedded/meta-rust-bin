@@ -40,6 +40,8 @@ WRAPPER_DIR = "${WORKDIR}/wrappers"
 # Set the Cargo manifest path to the typical location
 CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
 
+FILES_${PN}-dev += "${libdir}/*.rlib"
+
 CARGO_BUILD_FLAGS = "\
     --verbose \
     --manifest-path ${CARGO_MANIFEST_PATH} \
