@@ -6,13 +6,15 @@ An OpenEmebdded/Yocto layer providing pre-built toolchains for the
 
 <!-- toc -->
 
-- [Basic Example](#basic-example)
-- [Features](#features)
-- [Advanced Features](#advanced-features)
-  * [Specifying Cargo Features](#specifying-cargo-features)
-  * [Using Components Individually](#using-components-individually)
-- [Pre-built vs. Compiled](#pre-built-vs-compiled)
-- [Copyright](#copyright)
+- [meta-rust-bin](#meta-rust-bin)
+  - [Basic Example](#basic-example)
+  - [Features](#features)
+  - [Advanced Features](#advanced-features)
+    - [Specifying Cargo Features](#specifying-cargo-features)
+    - [Using Components Individually](#using-components-individually)
+  - [Pre-built vs. Compiled](#pre-built-vs-compiled)
+  - [Adding Support for New Versions](#adding-support-for-new-versions)
+  - [Copyright](#copyright)
 
 <!-- tocstop -->
 
@@ -20,19 +22,19 @@ An OpenEmebdded/Yocto layer providing pre-built toolchains for the
 ## Basic Example
 
 A basic class for cargo-based executables is provided. The following is a
-simple recipe that builds the [gpio-utils](https://github.com/rust-embedded/gpio-utils)
-crate from a branch tagged with the version `${PV}`:
+simple recipe called gpio_utils.bb that builds the [gpio-utils](https://github.com/rust-embedded/gpio-utils)
+crate from branch master.
 
 ```bitbake
-inherit cargo
-
 SUMMARY = "GPIO Utilities"
 HOMEPAGE = "git://github.com/rust-embedded/gpio-utils"
 LICENSE = "MIT"
 
-SRC_URI = "https://github.com/rust-embedded/gpio-utils.git;tag=${PV}"
-S = "${WORKDIR}/git"
+inherit cargo
 
+SRC_URI = "gitsm://github.com/rust-embedded/gpio-utils.git;protocol=https;branch=master"
+SRCREV="02b0658cd7e13e46f6b1a5de3fd9655711749759"
+S = "${WORKDIR}/git"
 LIC_FILES_CHKSUM = "file://LICENSE-MIT;md5=935a9b2a57ae70704d8125b9c0e39059"
 ```
 
