@@ -31,7 +31,13 @@ do_install[depends] += "virtual/fakeroot-native:do_populate_sysroot"
 
 python () {
     pv = d.getVar("PV", True)
-    pv_uri = pv[0:4] + '-' + pv[4:6] + '-' + pv[6:8]
+
+    # only specified nightly needs another branch
+    nightly = pv.startswith("nightly-")
+
+    if nightly:
+        pv = "nightly"
+
     target = d.getVar("CARGO_HOST_TARGET", True)
     cargo_uri = ("%s;md5sum=%s;sha256sum=%s;downloadname=%s" %
                  (cargo_url(target), cargo_md5(target), cargo_sha256(target),

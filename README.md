@@ -132,6 +132,15 @@ This will create two new recipes:
  release of rust itself (using the published channel data consumed by other
  tools like rustup).
 
+For latest nightly version:
+
+    ./build-new-version.sh nightly
+    
+For specified nightly version:
+    
+    ./build-new-version.sh nightly 2019-07-08
+    
+
 ## Copyright
 
 ```
