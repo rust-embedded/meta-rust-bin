@@ -26,7 +26,7 @@ S = "${WORKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
 S[vardepsexclude] += "WORKDIR"
 
 SYSROOT_DIRS_NATIVE += "${prefix}"
-SYSROOT_DIRS_BLACKLIST += "\
+SYSROOT_DIRS_IGNORE += "\
     ${prefix}/share \
     ${prefix}/etc \
 "

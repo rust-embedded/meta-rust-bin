@@ -11,7 +11,7 @@ PN = "cargo-bin-cross-${TARGET_ARCH}"
 CARGO_HOST_TARGET = "${@rust_target(d, 'HOST')}"
 
 SYSROOT_DIRS_NATIVE += "${prefix}"
-SYSROOT_DIRS_BLACKLIST += "\
+SYSROOT_DIRS_IGNORE += "\
     ${prefix}/share \
     ${prefix}/etc \
 "
