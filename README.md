@@ -66,7 +66,16 @@ Future:
     (provides space savings).
   * [ ] Total static linking using MUSL.
 
+### Use with Yocto Release 3.4 (honister) and Above
 
+Rust is included directly in `openmbedded-core` as of Yocto version 3.4. The
+included recipe builds Rust components from the sources. To use binaries from
+the `meta-rust-bin` layer instead, set `BBMASK` to exclude the package in your
+configuration:
+
+```bitbake
+BBMASK = "poky/meta/recipes-devtools/rust"
+```
 
 ## Advanced Features
 
