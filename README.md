@@ -9,6 +9,8 @@ An OpenEmebdded/Yocto layer providing pre-built toolchains for the
 - [meta-rust-bin](#meta-rust-bin)
   - [Basic Example](#basic-example)
   - [Features](#features)
+    - [Use with Yocto Release 4.0 (kirkstone) and Above](#use-with-yocto-release-40-kirkstone-and-above)
+    - [Use with Yocto Release 3.4 (honister) and Above](#use-with-yocto-release-34-honister-and-above)
   - [Advanced Features](#advanced-features)
     - [Specifying Cargo Features](#specifying-cargo-features)
     - [Using Components Individually](#using-components-individually)
@@ -65,6 +67,17 @@ Future:
   * [ ] Use of a shared libstd across all Rust packages on a target system
     (provides space savings).
   * [ ] Total static linking using MUSL.
+
+### Use with Yocto Release 4.0 (kirkstone) and Above
+
+From Yocto version 4.0 network access from tasks is disabled by default on
+kernels which support this feature (on most recent distros such as CentOS 8 and
+Debian 11 onwards). The task `do_compile` need to access the network because it
+downloads dependencies, so add the following line to the recipe:
+
+```bitbake
+do_compile[network] = "1"
+```
 
 ### Use with Yocto Release 3.4 (honister) and Above
 
