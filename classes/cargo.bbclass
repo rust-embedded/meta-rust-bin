@@ -113,6 +113,19 @@ cargo_do_compile() {
     bbnote "cargo --version" `cargo --version`
     bbnote cargo build ${CARGO_BUILD_FLAGS}
 
+    # __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly" is to allow
+    # using nighly features on stable releases, i.e features that are not
+    # yet considered stable.
+    #
+    # CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true" enables the nightly
+    # configuration option target-applies-to-host value to be set
+    #
+    # CARGO_TARGET_APPLIES_TO_HOST="false" is actually setting the value
+    # for this feature, which we disable, to make sure builds where target
+    # arch == host arch work correctly
+    #
+    # CARGO_UNSTABLE_HOST_CONFIG="true" enables the configuration option 
+    # CARGO_HOST_LINKER value to be set
     export __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly"
     export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
     export CARGO_TARGET_APPLIES_TO_HOST="false"
