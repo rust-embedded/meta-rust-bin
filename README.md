@@ -32,7 +32,7 @@ SUMMARY = "GPIO Utilities"
 HOMEPAGE = "git://github.com/rust-embedded/gpio-utils"
 LICENSE = "MIT"
 
-inherit cargo
+inherit cargo_bin
 
 SRC_URI = "git://github.com/rust-embedded/gpio-utils.git;protocol=https;branch=master"
 SRCREV="02b0658cd7e13e46f6b1a5de3fd9655711749759"
