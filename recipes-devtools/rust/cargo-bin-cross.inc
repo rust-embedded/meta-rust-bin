@@ -4,7 +4,7 @@ LICENSE = "Apache-2.0 | MIT"
 SECTION = "devel"
 
 inherit cross
-inherit rust-common
+inherit rust_bin-common
 
 PN = "cargo-bin-cross-${TARGET_ARCH}"
 
