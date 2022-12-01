@@ -118,6 +118,29 @@ cargo_do_compile() {
     export CXX="${WRAPPER_DIR}/cxx-native-wrapper.sh"
     export TARGET_LD="${WRAPPER_DIR}/linker-wrapper.sh"
     export LD="${WRAPPER_DIR}/linker-native-wrapper.sh"
+
+    # Protection against cross compile where host triple matches target triple but host tools do not match target tools
+    # enable nightly options
+    # CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST enables CARGO_TARGET_APPLIES_TO_HOST in non-nightly builds
+    # CARGO_UNSTABLE_HOST_CONFIG="true" enables CARGO_HOST_LINKER="gcc" and other host tools configurations
+    export __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly"
+    export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
+    export CARGO_TARGET_APPLIES_TO_HOST="false"
+    export CARGO_UNSTABLE_HOST_CONFIG="true"
+
+    export CARGO_TARGET_LINKER="$TARGET_LD"
+    export TARGET_LINKER="$TARGET_LD"
+    export CARGO_TARGET_CC="$TARGET_CC"
+    export CARGO_TARGET_CXX="$TARGET_CXX"
+
+    export CARGO_HOST_LINKER="$LD"
+    export HOST_LINKER="$LD"
+    export HOST_LD="$LD"
+    export CARGO_HOST_CC="$CC"
+    export HOST_CC="$CC"
+    export CARGO_HOST_CXX="$CXX"
+    export HOST_CXX="$CXX"
+
     export PKG_CONFIG_ALLOW_CROSS="1"
     export LDFLAGS=""
     export RUSTFLAGS="${RUSTFLAGS}"
