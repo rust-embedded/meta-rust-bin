@@ -49,7 +49,7 @@ dependencies as well as default compile and install steps.
 
 Currently supported:
 
-  * Rust 1.66.1 (and many older, stable versions)
+  * Rust 1.68.0 (and many older, stable versions)
   * x86 (32 and 64-bit), ARM (32 and 64-bit) build systems.
   * All Linux architectures that Rust itself supports (Multiple flavors of:
     x86, ARM, PPC, and MIPS)
