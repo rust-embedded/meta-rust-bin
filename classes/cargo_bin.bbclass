@@ -107,6 +107,7 @@ cargo_bin_do_compile() {
     export PKG_CONFIG_ALLOW_CROSS="1"
     export LDFLAGS=""
     export RUSTFLAGS="${RUSTFLAGS}"
+    export SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
     bbnote "which rustc:" `which rustc`
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
