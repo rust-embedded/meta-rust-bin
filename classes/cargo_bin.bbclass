@@ -22,14 +22,17 @@ RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
-EXTRA_RUSTFLAGS ??= ""
-RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
+
+# Optional RUSTFLAGS
+RUSTFLAGS ??= ""
 
 # Space-separated list of features to enable
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-CARGO_BUILD_PROFILE ?= "release"
+# This is based on the content of CARGO_BUILD_FLAGS and generally will need to
+# change if CARGO_BUILD_FLAGS changes.
+CARGO_BUILD_PROFILE ?= "${@oe.utils.conditional('DEBUG_BUILD', '1', 'debug', 'release', d)}" 
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
@@ -48,8 +51,6 @@ WRAPPER_DIR = "${WORKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
 CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
-
-FILES:${PN}-dev += "${libdir}/*.rlib"
 
 CARGO_BUILD_FLAGS = "\
     --offline \
@@ -119,7 +120,6 @@ cargo_bin_do_compile() {
     export CARGO_TARGET_APPLIES_TO_HOST="false"
     export CARGO_TARGET_${@rust_target(d, 'TARGET').replace('-','_').upper()}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
     export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
-    export CARGO_BUILD_FLAGS="-C rpath"
     export CARGO_PROFILE_RELEASE_DEBUG="true"
 
     # The CC crate defaults to using CFLAGS when compiling everything. We can
