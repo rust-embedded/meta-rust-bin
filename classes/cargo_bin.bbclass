@@ -22,32 +22,34 @@ RUST_BUILD = "${@rust_target(d, 'BUILD')}"
 
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
-EXTRA_RUSTFLAGS ??= ""
-RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
+
+# Optional RUSTFLAGS
+RUSTFLAGS ??= ""
 
 # Space-separated list of features to enable
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-CARGO_BUILD_TYPE ?= "--release"
+BUILD_MODE = "${@['--release', ''][d.getVar('DEBUG_BUILD') == '1']}"
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
-CARGO_DEBUG_DIR = "${B}/${RUST_TARGET}/debug"
-CARGO_RELEASE_DIR = "${B}/${RUST_TARGET}/release"
+# This is based on the content of CARGO_BUILD_FLAGS and generally will need to
+# change if CARGO_BUILD_FLAGS changes.
+BUILD_DIR = "${@['release', 'debug'][d.getVar('DEBUG_BUILD') == '1']}"
+CARGO_TARGET_SUBDIR="${RUST_TARGET}/${BUILD_DIR}"
+
 WRAPPER_DIR = "${WORKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
 CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
-
-FILES:${PN}-dev += "${libdir}/*.rlib"
 
 CARGO_BUILD_FLAGS = "\
     --offline \
     --verbose \
     --manifest-path ${CARGO_MANIFEST_PATH} \
     --target=${RUST_TARGET} \
-    ${CARGO_BUILD_TYPE} \
+    ${BUILD_MODE} \
     ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
     ${EXTRA_CARGO_FLAGS} \
 "
@@ -108,7 +110,6 @@ cargo_bin_do_compile() {
     export CARGO_TARGET_APPLIES_TO_HOST="false"
     export CARGO_TARGET_${@rust_target(d, 'TARGET').replace('-','_').upper()}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
     export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
-    export CARGO_BUILD_FLAGS="-C rpath"
     export CARGO_PROFILE_RELEASE_DEBUG="true"
 
     # The CC crate defaults to using CFLAGS when compiling everything. We can
@@ -125,15 +126,9 @@ cargo_bin_do_compile() {
 }
 
 cargo_bin_do_install() {
-    if [ "${CARGO_BUILD_TYPE}" = "--release" ]; then
-        local cargo_bindir="${CARGO_RELEASE_DIR}"
-    else
-        local cargo_bindir="${CARGO_DEBUG_DIR}"
-    fi
+     local files_installed=""
 
-    local files_installed=""
-
-    for tgt in "${cargo_bindir}"/*; do
+    for tgt in "${B}/${RUST_TARGET}/${CARGO_TARGET_SUBDIR}"/*; do
         case $tgt in
             *.so|*.rlib)
                 install -d "${D}${libdir}"
