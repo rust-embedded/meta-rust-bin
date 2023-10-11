@@ -52,6 +52,7 @@ CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
 FILES:${PN}-dev += "${libdir}/*.rlib"
 
 CARGO_BUILD_FLAGS = "\
+    --offline \
     --verbose \
     --manifest-path ${CARGO_MANIFEST_PATH} \
     --target=${RUST_TARGET} \
@@ -59,6 +60,10 @@ CARGO_BUILD_FLAGS = "\
     ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
     ${EXTRA_CARGO_FLAGS} \
 "
+
+cargo_bin_do_fetch() {
+    cargo fetch
+}
 
 cargo_bin_do_configure() {
     mkdir -p "${B}"
