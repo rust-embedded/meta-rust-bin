@@ -101,7 +101,7 @@ cargo_bin_do_compile() {
     export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
     export CARGO_UNSTABLE_HOST_CONFIG="true"
     export CARGO_TARGET_APPLIES_TO_HOST="false"
-    export CARGO_TARGET_${@rust_target(d, 'BUILD').replace('-','_')}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
+    export CARGO_TARGET_${@rust_target(d, 'TARGET').replace('-','_').upper()}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
     export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
     export CARGO_BUILD_FLAGS="-C rpath"
     export CARGO_PROFILE_RELEASE_DEBUG="true"
