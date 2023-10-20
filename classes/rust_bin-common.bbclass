@@ -73,6 +73,8 @@ def rust_target(d, spec_type):
         arch = "powerpc64"
     elif arch in ["ppc64le"]:
         arch = "powerpc64le"
+    elif arch in ["riscv64"]:
+        arch = "riscv64gc"
     else:
         bb.fatal("Unknown architecture: %s" % arch)
 
