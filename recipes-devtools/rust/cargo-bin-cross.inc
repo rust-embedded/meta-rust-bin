@@ -6,7 +6,11 @@ SECTION = "devel"
 inherit cross
 inherit rust_bin-common
 
+
 PN = "cargo-bin-cross-${TARGET_ARCH}"
+
+PROVIDES += "cargo-bin-native"
+
 
 CARGO_HOST_TARGET = "${@rust_target(d, 'HOST')}"
 
