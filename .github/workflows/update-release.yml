@@ -7,7 +7,6 @@ on:
       version:
         description: 'Rust release version'
         type: string
-        required: true
 
   # Run at midnight every day.
   schedule:
