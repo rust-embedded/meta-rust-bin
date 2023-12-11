@@ -36,7 +36,7 @@ CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
 # This is based on the content of CARGO_BUILD_FLAGS and generally will need to
 # change if CARGO_BUILD_FLAGS changes.
-BUILD_DIR = "${@['release', 'debug'][d.getVar('DEBUG_BUILD') == '1']}"
+BUILD_DIR = "${@oe.utils.conditional('DEBUG_BUILD', '1', 'debug', 'release', d)}"
 CARGO_TARGET_SUBDIR="${RUST_TARGET}/${BUILD_DIR}"
 
 WRAPPER_DIR = "${WORKDIR}/wrappers"
