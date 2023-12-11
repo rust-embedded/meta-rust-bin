@@ -30,7 +30,7 @@ RUSTFLAGS ??= ""
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-BUILD_MODE = "${@['--release', ''][d.getVar('DEBUG_BUILD') == '1']}"
+BUILD_MODE = "${@oe.utils.conditional('DEBUG_BUILD', '1', '', '--release', d)}"
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
