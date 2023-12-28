@@ -29,7 +29,7 @@ RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-# CARGO_BUILD_TYPE ?= "--release"
+CARGO_BUILD_TYPE ?= ""
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
