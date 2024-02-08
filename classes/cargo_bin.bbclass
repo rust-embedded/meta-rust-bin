@@ -29,12 +29,11 @@ RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-CARGO_BUILD_TYPE ?= "--release"
+CARGO_BUILD_PROFILE ?= "release"
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
-CARGO_DEBUG_DIR = "${B}/${RUST_TARGET}/debug"
-CARGO_RELEASE_DIR = "${B}/${RUST_TARGET}/release"
+CARGO_BINDIR = "${B}/${RUST_TARGET}/${CARGO_BUILD_PROFILE}"
 WRAPPER_DIR = "${WORKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
@@ -46,7 +45,7 @@ CARGO_BUILD_FLAGS = "\
     --verbose \
     --manifest-path ${CARGO_MANIFEST_PATH} \
     --target=${RUST_TARGET} \
-    ${CARGO_BUILD_TYPE} \
+    --profile=${CARGO_BUILD_PROFILE} \
     ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
     ${EXTRA_CARGO_FLAGS} \
 "
@@ -120,15 +119,9 @@ cargo_bin_do_compile() {
 }
 
 cargo_bin_do_install() {
-    if [ "${CARGO_BUILD_TYPE}" = "--release" ]; then
-        local cargo_bindir="${CARGO_RELEASE_DIR}"
-    else
-        local cargo_bindir="${CARGO_DEBUG_DIR}"
-    fi
-
     local files_installed=""
 
-    for tgt in "${cargo_bindir}"/*; do
+    for tgt in "${CARGO_BINDIR}"/*; do
         case $tgt in
             *.so|*.rlib)
                 install -d "${D}${libdir}"
