@@ -56,7 +56,8 @@ dependencies as well as default compile and install steps.
 
 Currently supported:
 
-  * Rust 1.74.0 (and many older, stable versions)
+  * Current stable rust release (usually shortly after release) and several
+    previous releases, see [the versioned recipes](./recipes-devtools/rust/).
   * x86 (32 and 64-bit), ARM (32 and 64-bit) build systems.
   * All Linux architectures that Rust itself supports (Multiple flavors of:
     x86, ARM, PPC, and MIPS)
