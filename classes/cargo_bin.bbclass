@@ -33,7 +33,17 @@ CARGO_BUILD_PROFILE ?= "release"
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
-CARGO_BINDIR = "${B}/${RUST_TARGET}/${CARGO_BUILD_PROFILE}"
+def cargo_profile_to_builddir(profile):
+    # See https://doc.rust-lang.org/cargo/guide/build-cache.html
+    # for the special cases mapped here.
+    return {
+        'dev': 'debug',
+        'test': 'debug',
+        'release': 'release',
+        'bench': 'release',
+    }.get(profile, profile)
+
+CARGO_BINDIR = "${B}/${RUST_TARGET}/${@cargo_profile_to_builddir(d.getVar('CARGO_BUILD_PROFILE'))}"
 WRAPPER_DIR = "${WORKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
