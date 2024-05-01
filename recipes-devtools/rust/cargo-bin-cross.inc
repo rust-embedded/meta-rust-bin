@@ -6,7 +6,6 @@ SECTION = "devel"
 inherit cross
 inherit rust_bin-common
 
-
 PN = "cargo-bin-cross-${TARGET_ARCH}"
 
 PROVIDES += "cargo-bin-native"

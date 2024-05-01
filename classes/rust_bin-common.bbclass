@@ -6,8 +6,8 @@ def rust_target(d, spec_type):
     import re
     spec_type = spec_type.upper()
 
-    arch = d.getVar('%s_ARCH' % spec_type, True)
-    os = d.getVar('%s_OS' % spec_type, True)
+    arch = d.getVar('%s_ARCH' % spec_type, True).lower()
+    os = d.getVar('%s_OS' % spec_type, True).lower()
 
     # Make sure that tasks properly recalculate after ARCH or OS change
     d.appendVarFlag("rust_target", "vardeps", " %s_ARCH" % spec_type)
@@ -36,8 +36,8 @@ def rust_target(d, spec_type):
 
     # TUNE_FEATURES are always only for the TARGET
     if spec_type == "TARGET":
-        tune = d.getVar("TUNE_FEATURES", True).split()
-        tune += d.getVar("MACHINEOVERRIDES", True).split(":")
+        tune = d.getVar("TUNE_FEATURES", True).lower().split()
+        tune += d.getVar("MACHINEOVERRIDES", True).lower().split(":")
     else:
         tune = []
 
@@ -73,6 +73,8 @@ def rust_target(d, spec_type):
         arch = "powerpc64"
     elif arch in ["ppc64le"]:
         arch = "powerpc64le"
+    elif arch in ["riscv64"]:
+        arch = "riscv64gc"
     else:
         bb.fatal("Unknown architecture: %s" % arch)
 

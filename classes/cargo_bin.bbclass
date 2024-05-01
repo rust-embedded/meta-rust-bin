@@ -29,12 +29,21 @@ RUSTFLAGS += "${EXTRA_RUSTFLAGS}"
 CARGO_FEATURES ??= ""
 
 # Control the Cargo build type (debug or release)
-CARGO_BUILD_TYPE ?= "--release"
+CARGO_BUILD_PROFILE ?= "release"
 
 CARGO_INSTALL_DIR ?= "${D}${bindir}"
 
-CARGO_DEBUG_DIR = "${B}/${RUST_TARGET}/debug"
-CARGO_RELEASE_DIR = "${B}/${RUST_TARGET}/release"
+def cargo_profile_to_builddir(profile):
+    # See https://doc.rust-lang.org/cargo/guide/build-cache.html
+    # for the special cases mapped here.
+    return {
+        'dev': 'debug',
+        'test': 'debug',
+        'release': 'release',
+        'bench': 'release',
+    }.get(profile, profile)
+
+CARGO_BINDIR = "${B}/${RUST_TARGET}/${@cargo_profile_to_builddir(d.getVar('CARGO_BUILD_PROFILE'))}"
 WRAPPER_DIR = "${WORKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
@@ -46,20 +55,10 @@ CARGO_BUILD_FLAGS = "\
     --verbose \
     --manifest-path ${CARGO_MANIFEST_PATH} \
     --target=${RUST_TARGET} \
-    ${CARGO_BUILD_TYPE} \
+    --profile=${CARGO_BUILD_PROFILE} \
     ${@oe.utils.conditional('CARGO_FEATURES', '', '', '--features "${CARGO_FEATURES}"', d)} \
     ${EXTRA_CARGO_FLAGS} \
 "
-
-create_cargo_config() {
-    echo > ${CARGO_HOME}/config
-    echo "[build]" >> ${CARGO_HOME}/config
-    echo "rustflags = ['-C', 'rpath']" >> ${CARGO_HOME}/config
-
-    echo >> ${CARGO_HOME}/config
-    echo "[profile.release]" >> ${CARGO_HOME}/config
-    echo "debug = true" >> ${CARGO_HOME}/config
-}
 
 cargo_bin_do_configure() {
     mkdir -p "${B}"
@@ -92,9 +91,6 @@ cargo_bin_do_configure() {
     echo "#!/bin/sh" >"${WRAPPER_DIR}/linker-native-wrapper.sh"
     echo "${BUILD_CC} ${BUILD_LDFLAGS} \"\$@\"" >>"${WRAPPER_DIR}/linker-native-wrapper.sh"
     chmod +x "${WRAPPER_DIR}/linker-native-wrapper.sh"
-
-    # Create our global config in CARGO_HOME
-    create_cargo_config
 }
 
 cargo_bin_do_compile() {
@@ -108,6 +104,24 @@ cargo_bin_do_compile() {
     export LDFLAGS=""
     export RUSTFLAGS="${RUSTFLAGS}"
     export SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
+
+    # This "DO_NOT_USE_THIS" option of cargo is currently the only way to
+    # configure a different linker for host and target builds when RUST_BUILD ==
+    # RUST_TARGET.
+    export __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly"
+    export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
+    export CARGO_UNSTABLE_HOST_CONFIG="true"
+    export CARGO_TARGET_APPLIES_TO_HOST="false"
+    export CARGO_TARGET_${@rust_target(d, 'TARGET').replace('-','_').upper()}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
+    export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
+    export CARGO_BUILD_FLAGS="-C rpath"
+    export CARGO_PROFILE_RELEASE_DEBUG="true"
+
+    # The CC crate defaults to using CFLAGS when compiling everything. We can
+    # give it custom flags for compiling on the host.
+    export HOST_CXXFLAGS=""
+    export HOST_CFLAGS=""
+
     bbnote "which rustc:" `which rustc`
     bbnote "rustc --version" `rustc --version`
     bbnote "which cargo:" `which cargo`
@@ -146,7 +160,7 @@ cargo_bin_do_install() {
 
     local files_installed=""
 
-    for tgt in "${cargo_bindir}"/*; do
+    for tgt in "${CARGO_BINDIR}"/*; do
         case $tgt in
             *.so|*.rlib)
                 install -d "${D}${libdir}"
