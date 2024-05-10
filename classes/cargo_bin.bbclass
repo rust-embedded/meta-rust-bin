@@ -127,7 +127,6 @@ cargo_bin_do_compile() {
     bbnote "which cargo:" `which cargo`
     bbnote "cargo --version" `cargo --version`
     bbnote cargo build ${CARGO_BUILD_FLAGS}
-
     cargo build ${CARGO_BUILD_FLAGS}
 }
 
