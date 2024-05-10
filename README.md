@@ -34,22 +34,30 @@ LICENSE = "MIT"
 
 inherit cargo_bin
 
+# Enable network for the compile task allowing cargo to download dependencies
+do_compile[network] = "1"
+
 SRC_URI = "git://github.com/rust-embedded/gpio-utils.git;protocol=https;branch=master"
 SRCREV="02b0658cd7e13e46f6b1a5de3fd9655711749759"
 S = "${WORKDIR}/git"
 LIC_FILES_CHKSUM = "file://LICENSE-MIT;md5=935a9b2a57ae70704d8125b9c0e39059"
 ```
 
-As you can see, there is almost no overhead introduced from the `cargo` class
-beyond simply inheriting it. The `cargo` class adds the appropriate Rust
+As you can see, there is almost no overhead introduced from the `cargo_bin` class
+beyond simply inheriting it. The `cargo_bin` class adds the appropriate Rust
 dependencies as well as default compile and install steps.
 
+> **Warning**  
+> In previous versions of `meta-rust-bin` the class `cargo` was used instead
+> of `cargo_bin`. Follow this [guide](#updating-from-an-old-meta-rust-bin) if you
+> are updating your `meta-rust-bin` layer from an old version.
 
 ## Features
 
 Currently supported:
 
-  * Rust 1.71.0 (and many older, stable versions)
+  * Current stable rust release (usually shortly after release) and several
+    previous releases, see [the versioned recipes](./recipes-devtools/rust/).
   * x86 (32 and 64-bit), ARM (32 and 64-bit) build systems.
   * All Linux architectures that Rust itself supports (Multiple flavors of:
     x86, ARM, PPC, and MIPS)
@@ -79,12 +87,15 @@ downloads dependencies, so add the following line to the recipe:
 do_compile[network] = "1"
 ```
 
-### Use with Yocto Release 3.4 (honister) and Above
+### Updating from an old `meta-rust-bin`
 
-Rust is included directly in `openmbedded-core` as of Yocto version 3.4. The
-included recipe builds Rust components from the sources. To use binaries from
-the `meta-rust-bin` layer instead, set `BBMASK` to exclude the package in your
-configuration:
+To avoid conflicts with the offical Rust layer of Yocto, the class `cargo` of
+`meta-rust-bin` was renamed to `cargo_bin`.
+
+If you are updating `meta-rust-bin` from an old version please make sure to
+update the inherited class of your recipe to `cargo_bin`.
+
+After the update it's safe to remove the previously used `BBMASK`:
 
 ```bitbake
 BBMASK = "poky/meta/recipes-devtools/rust"
