@@ -127,37 +127,10 @@ cargo_bin_do_compile() {
     bbnote "which cargo:" `which cargo`
     bbnote "cargo --version" `cargo --version`
     bbnote cargo build ${CARGO_BUILD_FLAGS}
-
-    # __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly" is to allow
-    # using nighly features on stable releases, i.e features that are not
-    # yet considered stable.
-    #
-    # CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true" enables the nightly
-    # configuration option target-applies-to-host value to be set
-    #
-    # CARGO_TARGET_APPLIES_TO_HOST="false" is actually setting the value
-    # for this feature, which we disable, to make sure builds where target
-    # arch == host arch work correctly
-    #
-    # CARGO_UNSTABLE_HOST_CONFIG="true" enables the configuration option 
-    # CARGO_HOST_LINKER value to be set
-    export __CARGO_TEST_CHANNEL_OVERRIDE_DO_NOT_USE_THIS="nightly"
-    export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
-    export CARGO_TARGET_APPLIES_TO_HOST="false"
-    export CARGO_UNSTABLE_HOST_CONFIG="true"
-    export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
-    export CARGO_TARGET_${@d.getVar('RUST_TARGET', True).upper().replace('-','_')}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
-	
     cargo build ${CARGO_BUILD_FLAGS}
 }
 
 cargo_bin_do_install() {
-    if [ "${CARGO_BUILD_TYPE}" = "--release" ]; then
-        local cargo_bindir="${CARGO_RELEASE_DIR}"
-    else
-        local cargo_bindir="${CARGO_DEBUG_DIR}"
-    fi
-
     local files_installed=""
 
     for tgt in "${CARGO_BINDIR}"/*; do
