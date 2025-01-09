@@ -19,6 +19,7 @@ export CARGO_TARGET_DIR = "${B}"
 
 RUST_TARGET = "${@rust_target(d, 'TARGET')}"
 RUST_BUILD = "${@rust_target(d, 'BUILD')}"
+CARGO_TARGET_LINKER_NAME = "${@d.getVar('RUST_TARGET', True).replace('-','_').upper()}"
 
 # Additional flags passed directly to the "cargo build" invocation
 EXTRA_CARGO_FLAGS ??= ""
@@ -112,7 +113,7 @@ cargo_bin_do_compile() {
     export CARGO_UNSTABLE_TARGET_APPLIES_TO_HOST="true"
     export CARGO_UNSTABLE_HOST_CONFIG="true"
     export CARGO_TARGET_APPLIES_TO_HOST="false"
-    export CARGO_TARGET_${@rust_target(d, 'TARGET').replace('-','_').upper()}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
+    export CARGO_TARGET_${CARGO_TARGET_LINKER_NAME}_LINKER="${WRAPPER_DIR}/linker-wrapper.sh"
     export CARGO_HOST_LINKER="${WRAPPER_DIR}/linker-native-wrapper.sh"
     export CARGO_BUILD_FLAGS="-C rpath"
     export CARGO_PROFILE_RELEASE_DEBUG="true"
