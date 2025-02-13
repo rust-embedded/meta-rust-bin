@@ -42,7 +42,7 @@ def rust_target(d, spec_type):
         tune = []
 
     if not os == 'linux':
-        bb.fatal("Unsupported OS: %s. Only Linux is supported." % os)
+        raise bb.parse.SkipRecipe("Unsupported OS: %s. Only Linux is supported." % os)
 
     if arch in ["i386", "i486", "i586", "i686", "i786", "x86"]:
         arch = "i686"
