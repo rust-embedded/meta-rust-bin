@@ -99,7 +99,7 @@ cargo_bin_do_compile() {
     export CC="${WRAPPER_DIR}/cc-native-wrapper.sh"
     export CXX="${WRAPPER_DIR}/cxx-native-wrapper.sh"
     export TARGET_LD="${WRAPPER_DIR}/linker-wrapper.sh"
-    export LD="${WRAPPER_DIR}/linker-wrapper.sh"
+    export LD="${WRAPPER_DIR}/linker-native-wrapper.sh"
     export PKG_CONFIG_ALLOW_CROSS="1"
     export LDFLAGS=""
     export RUSTFLAGS="${RUSTFLAGS}"
