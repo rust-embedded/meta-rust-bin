@@ -36,6 +36,7 @@ TARGET_TRIPLES=(
     x86_64-unknown-linux-gnu
     riscv64gc-unknown-linux-gnu
     thumbv7neon-unknown-linux-gnueabihf
+    wasm32-unknown-unknown
 )
 
 RUSTC_TRIPLES=(

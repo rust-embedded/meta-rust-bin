@@ -17,10 +17,11 @@ def rust_std_md5(triple):
         "armv7-unknown-linux-gnueabihf": "05e483655f6cc825bab204269d5075a7",
         "armv7-unknown-linux-musleabihf": "a5b41b026fd23cc1cdfcbc554b69e7dc",
         "i686-unknown-linux-gnu": "f2c6072cdec5d2dae68ba82569b0b8c8",
-        "mips-unknown-linux-gnu": "4e8fdcc2c37b343657217e35bcfe61bc",
-        "mipsel-unknown-linux-gnu": "889e10d7127359c96d6f1d9e67c0f26f",
         "powerpc-unknown-linux-gnu": "f7f761f8bd91684ab447aeedc2417332",
         "x86_64-unknown-linux-gnu": "4e1545cd02387cc624e06e405631b850",
+        "riscv64gc-unknown-linux-gnu": "c27c89e88b19378c6dce1647d1c8e531",
+        "thumbv7neon-unknown-linux-gnueabihf": "11b886b091f43de2e3fd6a8dfef4c267",
+        "wasm32-unknown-unknown": "8e74bdccd17aa5c2ec40bcf75b7bb5c2",
     }
     return get_by_triple(HASHES, triple)
 
@@ -35,10 +36,11 @@ def rust_std_sha256(triple):
         "armv7-unknown-linux-gnueabihf": "c4150af5f8366cb4a9e1fe4bd982ee84bb66789c3b5085c55f6f7ba8012a8feb",
         "armv7-unknown-linux-musleabihf": "bd43b68a4384acd7a5b862e2260c3a1eff8897e4e7fca1a7032d20e8e7c1c701",
         "i686-unknown-linux-gnu": "e8a937cb56aa2f644a537f403b4e92978cdb17a2e4d8b737f4a9743bb17724b4",
-        "mips-unknown-linux-gnu": "d61188ea93c117fb7534bd49c46f2f0116bc880f8e49a591688cbc2d4eb594d6",
-        "mipsel-unknown-linux-gnu": "cdc9a4caa8356e49c7f5d0806bf8f8cef693eb03e42d875388abc0bbed9b8099",
         "powerpc-unknown-linux-gnu": "c70872a80ca38b2daa83132da5ea979e443c8d973d4692fbaee8b9134926c8c1",
         "x86_64-unknown-linux-gnu": "b225606cd0cf02b1f5fc77420647a28b35f22d67e565dcdbe29f0c919245565f",
+        "riscv64gc-unknown-linux-gnu": "48ecc5b05c297f93af106be6ccf04cae5d478e5e53cddfd34ec19b860a591948",
+        "thumbv7neon-unknown-linux-gnueabihf": "45ecf852dd4c0969434eea9f8b1680a7d0af0e3ca80dc134c2c87577dc6b99d9",
+        "wasm32-unknown-unknown": "c1fcba65c7521fd4affb8a56df4d8435d0cbc8d9e2fc19a07a41daa05517d385",
     }
     return get_by_triple(HASHES, triple)
 
