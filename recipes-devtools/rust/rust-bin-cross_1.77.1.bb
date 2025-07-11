@@ -20,6 +20,8 @@ def rust_std_md5(triple):
         "powerpc-unknown-linux-gnu": "2cc94c177812830241e09bce45e58b67",
         "x86_64-unknown-linux-gnu": "abe3cba26a5e0b02d2d7d3f7c2066a7e",
         "riscv64gc-unknown-linux-gnu": "08a0a9e3d12659366f3f9b972c62356d",
+        "thumbv7neon-unknown-linux-gnueabihf": "589ef17b75d9396d278e0806584d2052",
+        "wasm32-unknown-unknown": "219b0186cd97958c47b4fb2787ce603a",
     }
     return get_by_triple(HASHES, triple)
 
@@ -37,6 +39,8 @@ def rust_std_sha256(triple):
         "powerpc-unknown-linux-gnu": "dcb9be262c0ae2b893f5f691ba45823745b4de8353ab012cfd1eef030afc84d5",
         "x86_64-unknown-linux-gnu": "eed95cb4c951768eeec372c7a20f5e074837315dc0d066b4ec79620ff26f657a",
         "riscv64gc-unknown-linux-gnu": "b0fa4d4b551acb8c58f41b8b212cbc76b9e1e9ef3f35d2b30a9e364894901646",
+        "thumbv7neon-unknown-linux-gnueabihf": "484beae3fe1d1396a919ff35df9fa52c9b3872ff175dd3e3a792a41424292d21",
+        "wasm32-unknown-unknown": "aeb8e4a596933e2ea0dc857eb15a12aa85511454f9c5cc9aba5f4ec61ed91870",
     }
     return get_by_triple(HASHES, triple)
 
