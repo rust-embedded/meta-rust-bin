@@ -25,6 +25,7 @@ cd "$TMPDIR"
 TARGET_TRIPLES=(
     aarch64-unknown-linux-gnu
     aarch64-unknown-linux-musl
+    aarch64-unknown-uefi
     arm-unknown-linux-gnueabi
     arm-unknown-linux-gnueabihf
     armv5te-unknown-linux-gnueabi
@@ -32,8 +33,10 @@ TARGET_TRIPLES=(
     armv7-unknown-linux-gnueabihf
     armv7-unknown-linux-musleabihf
     i686-unknown-linux-gnu
+    i686-unknown-uefi
     powerpc-unknown-linux-gnu
     x86_64-unknown-linux-gnu
+    x86_64-unknown-uefi
     riscv64gc-unknown-linux-gnu
     thumbv7neon-unknown-linux-gnueabihf
     wasm32-unknown-unknown
