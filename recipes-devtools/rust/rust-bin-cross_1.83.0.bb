@@ -21,6 +21,7 @@ def rust_std_md5(triple):
         "x86_64-unknown-linux-gnu": "9077cbeb36789a6673d500e06b9ab225",
         "riscv64gc-unknown-linux-gnu": "411b42f5750d920408afd93f2eec895c",
         "thumbv7neon-unknown-linux-gnueabihf": "5fdca995b661c440c33d2b7b8ebd0639",
+        "wasm32-unknown-unknown": "5a65c7e8309c1b58af58eede65c20116",
     }
     return get_by_triple(HASHES, triple)
 
@@ -39,6 +40,7 @@ def rust_std_sha256(triple):
         "x86_64-unknown-linux-gnu": "5cca3330f713fa7279db5384890c266535d079a85cdfd1a52e69c55f291db9c4",
         "riscv64gc-unknown-linux-gnu": "40f87b810dfacb9d4661eab3380163e1f09cad33a3e466268ac1801d330eb2be",
         "thumbv7neon-unknown-linux-gnueabihf": "472ad2c9d3a1b20d7f4e9ec319324d473793908c71dd2dca9fe32bdb35d2c8d8",
+        "wasm32-unknown-unknown": "c18935bb4dfdc027d5a88ff55d3d6306fb27fe796db4e5eda8723b75a7cdb2ce",
     }
     return get_by_triple(HASHES, triple)
 
