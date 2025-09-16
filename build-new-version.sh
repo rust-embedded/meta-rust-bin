@@ -34,6 +34,7 @@ TARGET_TRIPLES=(
     i686-unknown-linux-gnu
     powerpc-unknown-linux-gnu
     x86_64-unknown-linux-gnu
+    x86_64-unknown-linux-musl
     riscv64gc-unknown-linux-gnu
     thumbv7neon-unknown-linux-gnueabihf
     wasm32-unknown-unknown
