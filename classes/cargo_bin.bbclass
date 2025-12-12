@@ -7,7 +7,7 @@ CARGO_BIN_VERSION ??= "1.89.0"
 # Many crates rely on pkg-config to find native versions of their libraries for
 # linking - do the simple thing and make it generally available.
 DEPENDS:append = "\
-    ${@ "cargo-bin-cross-${TARGET_ARCH}-${CARGO_BIN_VERSION}" if d.getVar('TARGET_ARCH') != "${BUILD_ARCH}" else "cargo-bin-native" }    \
+    ${@ "cargo-bin-cross-${TARGET_ARCH}-${CARGO_BIN_VERSION}" if d.getVar('TARGET_ARCH') != "${BUILD_ARCH}" else "cargo-bin-native-${CARGO_BIN_VERSION}" }    \
     pkgconfig-native \
 "
 
