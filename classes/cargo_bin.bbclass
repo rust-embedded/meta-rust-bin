@@ -8,13 +8,13 @@ DEPENDS:append = "\
 "
 
 # Move CARGO_HOME from default of ~/.cargo
-export CARGO_HOME = "${WORKDIR}/cargo_home"
+export CARGO_HOME = "${UNPACKDIR}/cargo_home"
 
 # If something fails while building, this might give useful information
 export RUST_BACKTRACE = "1"
 
 # Do build out-of-tree
-B = "${WORKDIR}/target"
+B = "${UNPACKDIR}/target"
 export CARGO_TARGET_DIR = "${B}"
 
 RUST_TARGET = "${@rust_target(d, 'TARGET')}"
@@ -45,7 +45,7 @@ def cargo_profile_to_builddir(profile):
     }.get(profile, profile)
 
 CARGO_BINDIR = "${B}/${RUST_TARGET}/${@cargo_profile_to_builddir(d.getVar('CARGO_BUILD_PROFILE'))}"
-WRAPPER_DIR = "${WORKDIR}/wrappers"
+WRAPPER_DIR = "${UNPACKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
 CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"

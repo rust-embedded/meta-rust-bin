@@ -27,14 +27,14 @@ def get_s(d):
     nightly = pv.startswith("nightly-")
 
     if nightly:
-        return "${WORKDIR}/rustc-nightly-${RUST_BUILD_TARGET}"
+        return "${UNPACKDIR}/rustc-nightly-${RUST_BUILD_TARGET}"
     else:
-        return "${WORKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
+        return "${UNPACKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
   
 S = "${@get_s(d)}"
 
-# Relocating WORKDIR doesn't matter to installer
-S[vardepsexclude] += "WORKDIR"
+# Relocating UNPACKDIR doesn't matter to installer
+S[vardepsexclude] += "UNPACKDIR"
 
 SYSROOT_DIRS_NATIVE += "${prefix}"
 SYSROOT_DIRS_IGNORE += "\
@@ -51,7 +51,7 @@ fakeroot do_install() {
     ${S}/install.sh --destdir="${D}" --prefix="${prefix}"
 
     # Install rust standard libraries
-    cd ${WORKDIR}/rust-std
+    cd ${UNPACKDIR}/rust-std
     for subdir in *; do
         $subdir/install.sh --destdir="${D}" --prefix="${prefix}"
     done
