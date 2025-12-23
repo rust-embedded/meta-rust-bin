@@ -6,6 +6,15 @@ SECTION = "devel"
 inherit cross
 inherit rust_bin-common
 
+python () {
+    if d.getVar("LAYERSERIES_COMPAT_core") == "walnascar":
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("UNPACKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR_string", "UNPACKDIR")
+    else:
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("WORKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR_string", "WORKDIR")
+}
+
 PN:class-native = "rust-bin-native-${BUILD_ARCH}"
 
 # Required to link binaries
@@ -27,14 +36,14 @@ def get_s(d):
     nightly = pv.startswith("nightly-")
 
     if nightly:
-        return "${UNPACKDIR}/rustc-nightly-${RUST_BUILD_TARGET}"
+        return "${COMPATIBLE_PACKDIR}/rustc-nightly-${RUST_BUILD_TARGET}"
     else:
-        return "${UNPACKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
+        return "${COMPATIBLE_PACKDIR}/rustc-${PV}-${RUST_BUILD_TARGET}"
   
 S = "${@get_s(d)}"
 
-# Relocating UNPACKDIR doesn't matter to installer
-S[vardepsexclude] += "UNPACKDIR"
+# Relocating UNPACKDIR/WORKDIR doesn't matter to installer
+S[vardepsexclude] += "${COMPATIBLE_PACKDIR_string}"
 
 SYSROOT_DIRS_NATIVE += "${prefix}"
 SYSROOT_DIRS_IGNORE += "\
@@ -51,7 +60,7 @@ fakeroot do_install() {
     ${S}/install.sh --destdir="${D}" --prefix="${prefix}"
 
     # Install rust standard libraries
-    cd ${UNPACKDIR}/rust-std
+    cd ${COMPATIBLE_PACKDIR}/rust-std
     for subdir in *; do
         $subdir/install.sh --destdir="${D}" --prefix="${prefix}"
     done
