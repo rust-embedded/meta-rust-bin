@@ -147,9 +147,14 @@ cargo_bin_do_install() {
                 if [ -d "$tgt" ]; then
                     for example in "$tgt/"*; do
                         if [ -f "$example" ] && [ -x "$example" ]; then
-                            install -d "${CARGO_INSTALL_DIR}"
-                            install -m755 "$example" "${CARGO_INSTALL_DIR}"
-                            files_installed="$files_installed $example"
+                            # check if this is a suffixed-file from cargo
+                            shortername=${example%%-[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]}
+                            if [ "$shortername" = "$example" ]
+                            then
+                                install -d "${CARGO_INSTALL_DIR}"
+                                install -m755 "$example" "${CARGO_INSTALL_DIR}"
+                                files_installed="$files_installed $example"
+                            fi
                         fi
                     done
                 fi
