@@ -6,6 +6,15 @@ SECTION = "devel"
 inherit cross
 inherit rust_bin-common
 
+python () {
+    if d.getVar("LAYERSERIES_COMPAT_core") == "walnascar":
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("UNPACKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR_string", "UNPACKDIR")
+    else:
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("WORKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR_string", "WORKDIR")
+}
+
 PN = "cargo-bin-cross-${TARGET_ARCH}"
 
 PROVIDES += "cargo-bin-native"
@@ -47,7 +56,7 @@ python () {
     src_uri = d.getVar("SRC_URI", True).split()
     cargo_extract_path = cargo_url(target).split('/')[-1].replace('.tar.gz', '')
     d.setVar("SRC_URI", ' '.join(src_uri + [cargo_uri]))
-    d.setVar("S", "${{WORKDIR}}/{}".format(cargo_extract_path))
+    d.setVar("S", "${{COMPATIBLE_PACKDIR}}/{}".format(cargo_extract_path))
     d.appendVarFlag("S", "vardeps", " cargo_url")
-    d.appendVarFlag("S", "vardepsexclude", " WORKDIR")
+    d.appendVarFlag("S", "vardepsexclude", " ${COMPATIBLE_PACKDIR_string}")
 }
