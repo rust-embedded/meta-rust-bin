@@ -7,7 +7,8 @@ inherit cross
 inherit rust_bin-common
 
 python () {
-    if d.getVar("LAYERSERIES_COMPAT_core") == "walnascar":
+    layerseries = d.getVar("LAYERSERIES_COMPAT_core")
+    if layerseries in ["walnascar", "whinlatter"]:
         d.setVar("COMPATIBLE_PACKDIR", d.getVar("UNPACKDIR"))
         d.setVar("COMPATIBLE_PACKDIR_string", "UNPACKDIR")
     else:
