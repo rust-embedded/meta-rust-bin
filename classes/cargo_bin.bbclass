@@ -1,5 +1,12 @@
 inherit rust_bin-common
 
+python () {
+    if d.getVar("LAYERSERIES_COMPAT_core") == "walnascar":
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("UNPACKDIR"))
+    else:
+        d.setVar("COMPATIBLE_PACKDIR", d.getVar("WORKDIR"))
+}
+
 # Many crates rely on pkg-config to find native versions of their libraries for
 # linking - do the simple thing and make it generally available.
 DEPENDS:append = "\
@@ -8,13 +15,13 @@ DEPENDS:append = "\
 "
 
 # Move CARGO_HOME from default of ~/.cargo
-export CARGO_HOME = "${WORKDIR}/cargo_home"
+export CARGO_HOME = "${COMPATIBLE_PACKDIR}/cargo_home"
 
 # If something fails while building, this might give useful information
 export RUST_BACKTRACE = "1"
 
 # Do build out-of-tree
-B = "${WORKDIR}/target"
+B = "${COMPATIBLE_PACKDIR}/target"
 export CARGO_TARGET_DIR = "${B}"
 
 RUST_TARGET = "${@rust_target(d, 'TARGET')}"
@@ -45,7 +52,7 @@ def cargo_profile_to_builddir(profile):
     }.get(profile, profile)
 
 CARGO_BINDIR = "${B}/${RUST_TARGET}/${@cargo_profile_to_builddir(d.getVar('CARGO_BUILD_PROFILE'))}"
-WRAPPER_DIR = "${WORKDIR}/wrappers"
+WRAPPER_DIR = "${COMPATIBLE_PACKDIR}/wrappers"
 
 # Set the Cargo manifest path to the typical location
 CARGO_MANIFEST_PATH ?= "${S}/Cargo.toml"
