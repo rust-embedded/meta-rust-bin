@@ -146,7 +146,10 @@ cargo_bin_do_install() {
             *examples)
                 if [ -d "$tgt" ]; then
                     for example in "$tgt/"*; do
-                        if [ -f "$example" ] && [ -x "$example" ]; then
+                        if [ -f "$example" ] &&
+			   [ -x "$example" ] &&
+			   [ ! -e "$(echo "$example" | sed -n -E -e 's/-[[:xdigit:]]{16}$//p')" ];
+			then
                             install -d "${CARGO_INSTALL_DIR}"
                             install -m755 "$example" "${CARGO_INSTALL_DIR}"
                             files_installed="$files_installed $example"
