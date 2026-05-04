@@ -107,6 +107,12 @@ cargo_bin_do_compile() {
     export LDFLAGS=""
     export RUSTFLAGS="${RUSTFLAGS}"
     export SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
+    export http_proxy="${http_proxy}"
+    export https_proxy="${https_proxy}"
+    export ftp_proxy="${ftp_proxy}"
+    export ALL_PROXY="${ALL_PROXY}"
+    export all_proxy="${all_proxy}"
+    export no_proxy="${no_proxy}"
 
     # This "DO_NOT_USE_THIS" option of cargo is currently the only way to
     # configure a different linker for host and target builds when RUST_BUILD ==
