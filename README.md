@@ -9,8 +9,8 @@ An OpenEmebdded/Yocto layer providing pre-built toolchains for the
 - [meta-rust-bin](#meta-rust-bin)
   - [Basic Example](#basic-example)
   - [Features](#features)
-    - [Use with Yocto Release 4.0 (kirkstone) and Above](#use-with-yocto-release-40-kirkstone-and-above)
-    - [Use with Yocto Release 3.4 (honister) and Above](#use-with-yocto-release-34-honister-and-above)
+    - [Allow `build.rs` to access the network in Yocto Release 4.0 (kirkstone) and Above](#allow-buildrs-to-access-the-network-in-yocto-release-40-kirkstone-and-above)
+  - [Updating from an old `meta-rust-bin`](#updating-from-an-old-meta-rust-bin)
   - [Advanced Features](#advanced-features)
     - [Specifying Cargo Features](#specifying-cargo-features)
     - [Using Components Individually](#using-components-individually)
@@ -33,9 +33,6 @@ HOMEPAGE = "git://github.com/rust-embedded/gpio-utils"
 LICENSE = "MIT"
 
 inherit cargo_bin
-
-# Enable network for the compile task allowing cargo to download dependencies
-do_compile[network] = "1"
 
 SRC_URI = "git://github.com/rust-embedded/gpio-utils.git;protocol=https;branch=master"
 SRCREV="02b0658cd7e13e46f6b1a5de3fd9655711749759"
@@ -76,18 +73,22 @@ Future:
     (provides space savings).
   * [ ] Total static linking using MUSL.
 
-### Use with Yocto Release 4.0 (kirkstone) and Above
+### Allow `build.rs` to access the network in Yocto Release 4.0 (kirkstone) and Above
 
 From Yocto version 4.0 network access from tasks is disabled by default on
 kernels which support this feature (on most recent distros such as CentOS 8 and
-Debian 11 onwards). The task `do_compile` need to access the network because it
-downloads dependencies, so add the following line to the recipe:
+Debian 11 onwards). If the `build.rs` needs access to the network, you have to
+enable the network for the `do_compile` task adding the following line to the
+recipe:
 
 ```bitbake
+# After the line `inherit cargo_bin`
+
+# Enable network access for `build.rs` in compile task
 do_compile[network] = "1"
 ```
 
-### Updating from an old `meta-rust-bin`
+## Updating from an old `meta-rust-bin`
 
 To avoid conflicts with the offical Rust layer of Yocto, the class `cargo` of
 `meta-rust-bin` was renamed to `cargo_bin`.
