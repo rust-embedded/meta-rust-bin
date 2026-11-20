@@ -3,9 +3,9 @@ inherit rust_bin-common
 python () {
     layerseries = d.getVar("LAYERSERIES_COMPAT_core")
     if layerseries in ["walnascar", "whinlatter", "wrynose"]:
-        d.setVar("COMPATIBLE_PACKDIR", d.getVar("UNPACKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR", "${UNPACKDIR}")
     else:
-        d.setVar("COMPATIBLE_PACKDIR", d.getVar("WORKDIR"))
+        d.setVar("COMPATIBLE_PACKDIR", "${WORKDIR}")
 }
 
 # Many crates rely on pkg-config to find native versions of their libraries for
